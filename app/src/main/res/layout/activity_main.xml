@@ -44,32 +44,5 @@
             android:layout_marginBottom="45dp"
             android:layout_gravity="center" />
 
-        <!-- Ajouter une vue d'ombre ou un fond semi-transparent pour superposer les images -->
-        <View
-            android:id="@+id/shadowView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="45dp"
-            android:layout_gravity="center"
-            android:background="#80000000" />
-
     </FrameLayout>
-
-    <!--
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewPager"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/line1"
-        android:layout_marginBottom="-2dp" />
-    -->
-
-    <TextView
-        android:id="@+id/endText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Fin du défilement"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
-
 </RelativeLayout>

@@ -2,4 +2,9 @@
 <resources>
 
     <style name="Theme.JobSwype" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.App.activity_launch_screen" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowSplashScreenBackground">@color/purple_200</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.JobSwype</item>
+    </style>
 </resources>
