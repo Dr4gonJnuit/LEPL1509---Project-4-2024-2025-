@@ -1,5 +1,3 @@
 <resources>
-    <string name="app_name">JobSwype</string>
-    <string name="happy_birthday_text">Happy Birthday Jojo!</string>
-    <string name="signature_text">From Jonas Bette</string>
+    <string name="app_name">LoginSignup</string>
 </resources>
