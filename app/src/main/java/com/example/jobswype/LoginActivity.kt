@@ -1,4 +1,4 @@
-package com.example.loginsignup
+package com.example.jobswype
 
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
@@ -9,13 +9,16 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.example.loginsignup.databinding.ActivityLoginBinding
+import com.example.jobswype.databinding.ActivityLoginBinding
+import com.example.jobswype.session.LoginSession
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private lateinit var firebaseAuth: FirebaseAuth
+
+    lateinit var session: LoginSession
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,17 +30,19 @@ class LoginActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
 
         binding.loginButton.setOnClickListener {
-            val email = binding.loginEmail.text.toString()
+            val email = binding.loginEmail.text.toString().trimEnd()
             val password = binding.loginPassword.text.toString()
 
             if (email.isNotEmpty() && password.isNotEmpty()){
 
                 firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener{
                     if (it.isSuccessful){
+                        session.createLoginSession(password, email)
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
+                        finish()
                     } else {
-                        Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show() //or it.exception.toString()
+                        Toast.makeText(this, "Wrong email/password", Toast.LENGTH_SHORT).show() //or it.exception.toString()
                     }
                 }
             } else {
@@ -69,6 +74,14 @@ class LoginActivity : AppCompatActivity() {
         binding.signupRedirectText.setOnClickListener {
             val signupIntent = Intent(this, SignupActivity::class.java)
             startActivity(signupIntent)
+        }
+
+        session = LoginSession(this)
+        if (session.isLoggedIn()){
+            val i = Intent(applicationContext, MainActivity::class.java)
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(i)
+            finish()
         }
     }
 

@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "LoginSignup"
+rootProject.name = "JobSwype"
 include(":app")
  

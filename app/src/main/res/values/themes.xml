@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.LoginSignup" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Theme.JobSwype" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:colorPrimary">@color/purple</item>
         <item name="android:colorPrimaryDark">@color/purple_dark</item>
     </style>

@@ -1,10 +1,10 @@
-package com.example.loginsignup
+package com.example.jobswype
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import com.example.loginsignup.databinding.ActivitySignupBinding
+import com.example.jobswype.databinding.ActivitySignupBinding
 import com.google.firebase.auth.FirebaseAuth
 
 class SignupActivity : AppCompatActivity() {
@@ -20,7 +20,7 @@ class SignupActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
 
         binding.signupButton.setOnClickListener{
-            val email = binding.signupEmail.text.toString()
+            val email = binding.signupEmail.text.toString().trimEnd()
             val password = binding.signupPassword.text.toString()
             val confirmPassword = binding.signupConfirm.text.toString()
 
@@ -29,7 +29,7 @@ class SignupActivity : AppCompatActivity() {
 
                     firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener{
                         if (it.isSuccessful){
-                            val intent = Intent(this, LoginActivity::class.java)
+                            val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
                         } else {
                             Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()

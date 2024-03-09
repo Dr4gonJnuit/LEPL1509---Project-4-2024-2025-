@@ -19,7 +19,7 @@
 
         <activity
             android:name=".LoginActivity"
-            android:theme="@style/Theme.LoginSignup.SplashTheme"
+            android:theme="@style/Theme.JobSwype.SplashTheme"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

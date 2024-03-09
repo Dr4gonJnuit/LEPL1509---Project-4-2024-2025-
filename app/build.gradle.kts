@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.loginsignup"
+    namespace = "com.example.jobswype"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.loginsignup"
+        applicationId = "com.example.jobswype"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

@@ -1,4 +1,4 @@
-package com.example.loginsignup.ui.theme
+package com.example.jobswype.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -22,7 +22,7 @@
             android:layout_width="125dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
-            android:src="@drawable/splash_logo" />
+            android:src="@drawable/loginsignup_logo" />
 
         <EditText
             android:layout_width="match_parent"

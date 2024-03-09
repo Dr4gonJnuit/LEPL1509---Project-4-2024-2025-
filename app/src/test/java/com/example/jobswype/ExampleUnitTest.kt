@@ -1,4 +1,4 @@
-package com.example.loginsignup
+package com.example.jobswype
 
 import org.junit.Test
 
