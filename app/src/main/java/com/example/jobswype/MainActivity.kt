@@ -37,10 +37,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.jobswype.ui.theme.Purple80
 import com.example.jobswype.R
+import com.example.jobswype.session.LoginSession
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -58,6 +60,7 @@ class MainActivity : ComponentActivity() {
             ) {
                 // Your app content goes here
                 MyAppContent()
+                LogoutAction()
             }
         }
     }
@@ -101,7 +104,7 @@ fun MyAppContent() {
                 }
                 .pointerInput(Unit) {
                     detectDragGestures(onDragEnd = {
-                        coroutineScope.launch{
+                        coroutineScope.launch {
                             animatedOffsetX.animateTo(0f)
                         }
                         if (abs(offsetX) > 200) { // Threshold to consider as swipe
@@ -112,7 +115,7 @@ fun MyAppContent() {
                     }) { change, dragAmount ->
                         if (change.positionChange() != Offset.Zero) change.consume()
                         offsetX += dragAmount.x // Update drag amount
-                        coroutineScope.launch{
+                        coroutineScope.launch {
                             animatedOffsetX.snapTo(offsetX)
                         }
                     }
@@ -180,5 +183,22 @@ fun MyAppContent() {
 
             }
         }
+    }
+}
+
+@Composable
+fun LogoutAction() {
+    val context = LocalContext.current
+    val loginSession = LoginSession(context)
+    Button(
+        onClick = {
+            loginSession.logoutUser() // clear the session and redirect to LoginActivity
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+    ) {
+        Text(text = "Logout", color = Color.White)
     }
 }
