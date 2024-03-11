@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "479325241680",
-    "project_id": "jobswype-9ab54",
-    "storage_bucket": "jobswype-9ab54.appspot.com"
+    "project_number": "1087599333574",
+    "project_id": "jobswype-927fc",
+    "storage_bucket": "jobswype-927fc.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:479325241680:android:95789afce130eaa4c8ec55",
+        "mobilesdk_app_id": "1:1087599333574:android:a9c4cf8d02ea74ccba87c7",
         "android_client_info": {
           "package_name": "com.example.jobswype"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCizHmdUr-vYAnk6CdjoOZESI0tWaPHxsM"
+          "current_key": "AIzaSyBpmcVvXAJQkK1C-h8SMxzCLNg5gn-6-zE"
         }
       ],
       "services": {
