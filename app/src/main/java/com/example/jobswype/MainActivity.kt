@@ -159,7 +159,7 @@ fun MyAppContent() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(500.dp)
-                    .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 50.dp), // Ajuster les valeurs de padding ici
+                    .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 85.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom
             ) {
