@@ -4,6 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/blue_light"
-    tools:context=".HomeFragment">
+    tools:context=".MessagesFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Messages Fragment"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:textColor="@color/blue"/>
 
 </FrameLayout>

@@ -15,7 +15,7 @@
         android:layout_marginHorizontal="10dp"
         app:cardElevation="20dp"
         android:orientation="vertical"
-        android:background="@drawable/purple_border"
+        android:background="@drawable/blue_border"
         android:padding="20dp">
 
         <ImageView
@@ -29,7 +29,7 @@
             android:layout_height="60dp"
             android:id="@+id/signup_email"
             android:layout_marginTop="10dp"
-            android:background="@drawable/purple_border"
+            android:background="@drawable/blue_border"
             android:padding="8dp"
             android:hint="Email"
             android:drawableLeft="@drawable/baseline_email_24"
@@ -41,7 +41,7 @@
             android:layout_height="60dp"
             android:id="@+id/signup_password"
             android:layout_marginTop="10dp"
-            android:background="@drawable/purple_border"
+            android:background="@drawable/blue_border"
             android:padding="8dp"
             android:hint="Password"
             android:inputType="textPassword"
@@ -54,7 +54,7 @@
             android:layout_height="60dp"
             android:id="@+id/signup_confirm"
             android:layout_marginTop="10dp"
-            android:background="@drawable/purple_border"
+            android:background="@drawable/blue_border"
             android:padding="8dp"
             android:hint="Confirm Password"
             android:inputType="textPassword"
@@ -69,8 +69,8 @@
             android:text="Sign Up"
             android:id="@+id/signup_button"
             android:textColor="@color/white"
-            android:backgroundTint="@color/purple_dark"
-            android:background="@drawable/purple_border"
+            android:backgroundTint="@color/blue_dark"
+            android:background="@drawable/blue_border"
             android:textSize="18sp"/>
 
         <TextView
@@ -82,7 +82,7 @@
             android:padding="8dp"
             android:layout_marginTop="8dp"
             android:textSize="18sp"
-            android:textColor="@color/purple_dark"/>
+            android:textColor="@color/blue_dark"/>
 
     </LinearLayout>
 </LinearLayout>

@@ -2,7 +2,10 @@
 <resources>
 
     <style name="Theme.JobSwype" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:colorPrimary">@color/purple</item>
-        <item name="android:colorPrimaryDark">@color/purple_dark</item>
+        <item name="android:colorPrimary">@color/blue</item>
+        <item name="android:colorPrimaryDark">@color/blue</item>
+    </style>
+    <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/blue_light</item>
     </style>
 </resources>

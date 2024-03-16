@@ -15,7 +15,7 @@
         android:layout_marginHorizontal="10dp"
         app:cardElevation="20dp"
         android:orientation="vertical"
-        android:background="@drawable/purple_border"
+        android:background="@drawable/blue_border"
         android:padding="20dp">
 
         <ImageView
@@ -29,7 +29,7 @@
             android:layout_height="60dp"
             android:id="@+id/login_email"
             android:layout_marginTop="10dp"
-            android:background="@drawable/purple_border"
+            android:background="@drawable/blue_border"
             android:padding="8dp"
             android:maxLines="1"
             android:hint="Email"
@@ -43,7 +43,7 @@
             android:layout_height="60dp"
             android:id="@+id/login_password"
             android:layout_marginTop="10dp"
-            android:background="@drawable/purple_border"
+            android:background="@drawable/blue_border"
             android:padding="8dp"
             android:maxLines="1"
             android:hint="Password"
@@ -59,8 +59,8 @@
             android:text="Login"
             android:id="@+id/login_button"
             android:textColor="@color/white"
-            android:backgroundTint="@color/purple_dark"
-            android:background="@drawable/purple_border"
+            android:backgroundTint="@color/blue_dark"
+            android:background="@drawable/blue_border"
             android:textSize="18sp"/>
 
         <TextView
@@ -71,7 +71,7 @@
             android:layout_marginTop="6dp"
             android:padding="8dp"
             android:text="Forgot Password?"
-            android:textColor="@color/purple_dark"
+            android:textColor="@color/blue_dark"
             android:textSize="16sp"/>
         <TextView
             android:layout_width="wrap_content"
@@ -82,7 +82,7 @@
             android:padding="8dp"
             android:layout_marginTop="14dp"
             android:textSize="18sp"
-            android:textColor="@color/purple_dark"/>
+            android:textColor="@color/blue_dark"/>
 
     </LinearLayout>
 </LinearLayout>
