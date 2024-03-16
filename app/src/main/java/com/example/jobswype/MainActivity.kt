@@ -1,8 +1,7 @@
 package com.example.jobswype
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.foundation.Image
@@ -20,8 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,16 +37,22 @@ import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.jobswype.ui.theme.Purple80
+import androidx.fragment.app.Fragment
+import com.example.jobswype.ui.theme.*
 import com.example.jobswype.R
 import com.example.jobswype.session.LoginSession
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var bottomNavigationView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState) 
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        /*
         setContent {
             // Use the Surface component with a modifier to set the background color
             Surface(
@@ -62,7 +65,29 @@ class MainActivity : ComponentActivity() {
                 MyAppContent()
                 LogoutAction()
             }
+        }*/
+        bottomNavigationView = findViewById(R.id.bottom_navigation)
+        bottomNavigationView.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.bottom_home -> {
+                    replaceFragment(HomeFragment())
+                    true
+                }
+                R.id.bottom_profile -> {
+                    replaceFragment(ProfileFragment())
+                    true
+                }
+                R.id.bottom_messages -> {
+                    replaceFragment(MessagesFragment())
+                    true
+                }
+                else -> false
+            }
         }
+        replaceFragment(HomeFragment())
+    }
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit()
     }
 }
 
@@ -89,6 +114,7 @@ fun MyAppContent() {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(Blue_light)
             .padding(top = 80.dp), // Ajuster la valeur de top selon l'espace souhaité
         contentAlignment = Alignment.TopCenter
     ) {
