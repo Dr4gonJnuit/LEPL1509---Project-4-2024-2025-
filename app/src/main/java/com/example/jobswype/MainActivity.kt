@@ -85,8 +85,10 @@ class MainActivity : AppCompatActivity() {
         drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this@MainActivity::setNavigationItemSelectedListener)
+
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
@@ -123,7 +125,7 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.nav_settings -> supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, SettingsFragment()).commit()
-            R.id.nav_logout -> {
+            /*R.id.nav_logout -> {
                 loginSession = LoginSession(this)
 
                 tvEmail = findViewById(R.id.login_email)
@@ -141,7 +143,7 @@ class MainActivity : AppCompatActivity() {
                     loginSession.logoutUser()
                     true
                 }
-            }
+            }*/
         }
         drawerLayout.closeDrawer(GravityCompat.START)
         return true

@@ -78,9 +78,10 @@
                 android:layout_height="100dp"
                 android:id="@+id/profileImg"
                 android:layout_marginTop="30dp"
-                android:src="@drawable/aklogowhite"
+                android:src="@drawable/cv1"
                 android:layout_gravity="center"/>
 
+            <!-- Remettre quand le bouton est fonctionnel
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
@@ -100,6 +101,7 @@
                 android:layout_marginTop="10dp"
                 android:backgroundTint="@color/blue_dark"
                 android:textColor="@color/white"/>
+            -->
 
         </LinearLayout>
 
