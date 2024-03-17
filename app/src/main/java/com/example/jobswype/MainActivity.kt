@@ -58,6 +58,7 @@ import kotlin.math.abs
 class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var navDrawer: NavigationView
     private lateinit var tvEmail : TextView
     private lateinit var tvPassword : TextView
     private lateinit var btnLogout : MenuItem
@@ -125,29 +126,16 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.nav_settings -> supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, SettingsFragment()).commit()
-            /*R.id.nav_logout -> {
-                loginSession = LoginSession(this)
-
-                tvEmail = findViewById(R.id.login_email)
-                tvPassword = findViewById(R.id.login_password)
-                btnLogout = findViewById(R.id.nav_logout)
-
-                loginSession.checkLogin()
-                val user : HashMap<String, String> = loginSession.getUserDetails()
-                var email = user.get(LoginSession.KEY_EMAIL)
-                var password = user.get(LoginSession.KEY_PASSWORD)
-
-                tvEmail.setText(email)
-                tvPassword.setText(password)
-                btnLogout.setOnMenuItemClickListener {
-                    loginSession.logoutUser()
-                    true
-                }
-            }*/
+            R.id.nav_logout -> {
+                val loginSession = LoginSession(this)
+                loginSession.logoutUser()
+                finish()
+            }
         }
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
+
 
     @Deprecated("Deprecated in Java")
     @Override

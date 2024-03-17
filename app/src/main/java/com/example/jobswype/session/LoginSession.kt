@@ -31,6 +31,7 @@ class LoginSession {
         editor.commit()
     }
 
+    /*
     fun checkLogin() {
         if (!this.isLoggedIn()) {
             val i = Intent(context, LoginActivity::class.java)
@@ -38,7 +39,7 @@ class LoginSession {
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(i)
         }
-    }
+    }*/
 
     fun getUserDetails(): HashMap<String, String> {
         val user: Map<String, String> = HashMap<String, String>()
@@ -54,7 +55,7 @@ class LoginSession {
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(i)
-    } //session Using SharedPreference In Android Studio 13 min logout button add to nav_menu
+    }
 
     fun isLoggedIn(): Boolean {
         return sess.getBoolean(IS_LOGIN, false)
