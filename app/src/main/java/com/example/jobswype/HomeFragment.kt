@@ -18,10 +18,8 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the ComposeView
         return ComposeView(requireContext()).apply {
             setContent {
-                // Set the content of the ComposeView to MyAppContent
                 MyAppContent()
             }
         }

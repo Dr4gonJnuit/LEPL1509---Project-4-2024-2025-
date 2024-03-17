@@ -32,6 +32,7 @@
             android:background="@drawable/blue_border"
             android:padding="8dp"
             android:hint="Email"
+            android:inputType="textEmailAddress"
             android:drawableLeft="@drawable/baseline_email_24"
             android:drawablePadding="8dp"
             android:textColor="@color/black"/>
