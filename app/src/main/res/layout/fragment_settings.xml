@@ -86,7 +86,7 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:id="@+id/uploadButton"
-                android:text="Upload Resume"
+                android:text="Upload File"
                 android:layout_marginTop="20dp"
                 android:backgroundTint="@color/blue"
                 android:textColor="@color/white"/>
