@@ -54,14 +54,13 @@ import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 
-
 class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var navDrawer: NavigationView
-    private lateinit var tvEmail : TextView
-    private lateinit var tvPassword : TextView
-    private lateinit var btnLogout : MenuItem
+    private lateinit var tvEmail: TextView
+    private lateinit var tvPassword: TextView
+    private lateinit var btnLogout: MenuItem
     private lateinit var loginSession: LoginSession
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,7 +89,13 @@ class MainActivity : AppCompatActivity() {
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this@MainActivity::setNavigationItemSelectedListener)
 
-        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav)
+        val toggle = ActionBarDrawerToggle(
+            this,
+            drawerLayout,
+            toolbar,
+            R.string.open_nav,
+            R.string.close_nav
+        )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         if (savedInstanceState == null) {
@@ -107,14 +112,17 @@ class MainActivity : AppCompatActivity() {
                     replaceFragment(HomeFragment())
                     true
                 }
+
                 R.id.bottom_profile -> {
                     replaceFragment(ProfileFragment())
                     true
                 }
+
                 R.id.bottom_messages -> {
                     replaceFragment(MessagesFragment())
                     true
                 }
+
                 else -> false
             }
         }
@@ -126,6 +134,7 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.nav_settings -> supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, SettingsFragment()).commit()
+
             R.id.nav_logout -> {
                 val loginSession = LoginSession(this)
                 loginSession.logoutUser()
@@ -149,7 +158,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun replaceFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+            .commit()
     }
 }
 
@@ -168,7 +178,7 @@ fun MyAppContent() {
     var offsetX by remember { mutableStateOf(0f) }
     // Animate back to original position when not dragging
     val coroutineScope = rememberCoroutineScope()
-    val animatedOffsetX = remember { Animatable (0f) }
+    val animatedOffsetX = remember { Animatable(0f) }
     /*
     val animatedOffsetX by animateFloatAsState(
         targetValue = offsetX,
@@ -198,7 +208,7 @@ fun MyAppContent() {
                         }
                         if (abs(offsetX) > 200) { // Threshold to consider as swipe
                             // Move to next image
-                            if (currentIndex+1 < images.size && currentIndex != 0)
+                            if (currentIndex + 1 < images.size && currentIndex != 0)
                                 currentIndex = (currentIndex + 1)
                             else
                                 currentIndex = 0
@@ -237,13 +247,20 @@ fun MyAppContent() {
                 ) {
                     Button(
                         onClick = {
-                            coroutineScope.launch{
-                                animatedOffsetX.animateTo(-300f, animationSpec = TweenSpec(durationMillis = 200)) // target value is -300 because its swiping to left
-                                animatedOffsetX.animateTo(0f, animationSpec = TweenSpec(durationMillis = 200))
-                                if (currentIndex+1 < images.size && currentIndex != 0)
+                            coroutineScope.launch {
+                                animatedOffsetX.animateTo(
+                                    -300f,
+                                    animationSpec = TweenSpec(durationMillis = 200)
+                                ) // target value is -300 because its swiping to left
+                                animatedOffsetX.animateTo(
+                                    0f,
+                                    animationSpec = TweenSpec(durationMillis = 200)
+                                )
+                                if (currentIndex + 1 < images.size && currentIndex != 0)
                                     currentIndex = (currentIndex + 1)
                                 else
-                                    currentIndex = 0 // if the current index is the last image, it will go back to a defaukt image
+                                    currentIndex =
+                                        0 // if the current index is the last image, it will go back to a defaukt image
                             }
 
                         },
@@ -259,10 +276,16 @@ fun MyAppContent() {
 
                     Button(
                         onClick = {
-                            coroutineScope.launch{
-                                animatedOffsetX.animateTo(300f, animationSpec = TweenSpec(durationMillis = 200)) // tweenspeec is custom animation, targetvalue is 300f because swiping to the right
-                                animatedOffsetX.animateTo(0f, animationSpec = TweenSpec(durationMillis = 200))
-                                if (currentIndex+1 < images.size && currentIndex != 0)
+                            coroutineScope.launch {
+                                animatedOffsetX.animateTo(
+                                    300f,
+                                    animationSpec = TweenSpec(durationMillis = 200)
+                                ) // tweenspeec is custom animation, targetvalue is 300f because swiping to the right
+                                animatedOffsetX.animateTo(
+                                    0f,
+                                    animationSpec = TweenSpec(durationMillis = 200)
+                                )
+                                if (currentIndex + 1 < images.size && currentIndex != 0)
                                     currentIndex = (currentIndex + 1)
                                 else
                                     currentIndex = 0

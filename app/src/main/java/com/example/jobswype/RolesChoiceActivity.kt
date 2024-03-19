@@ -47,7 +47,11 @@ class RolesChoice : AppCompatActivity() {
                     finish()
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(this, "Échec de la mise à jour du rôle: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        "Échec de la mise à jour du rôle: ${e.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
         }
     }

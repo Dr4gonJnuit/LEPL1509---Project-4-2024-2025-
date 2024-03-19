@@ -33,16 +33,17 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.loginPassword.text.toString()
             // check le role et renvoie vers la page correspondante
 
-            if (email.isNotEmpty() && password.isNotEmpty()){
+            if (email.isNotEmpty() && password.isNotEmpty()) {
 
-                firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener{
-                    if (it.isSuccessful){
+                firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
+                    if (it.isSuccessful) {
                         session.createLoginSession(password, email)
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                         finish()
                     } else {
-                        Toast.makeText(this, "Wrong email/password", Toast.LENGTH_SHORT).show() //or it.exception.toString()
+                        Toast.makeText(this, "Wrong email/password", Toast.LENGTH_SHORT)
+                            .show() //or it.exception.toString()
                     }
                 }
             } else {
@@ -65,7 +66,7 @@ class LoginActivity : AppCompatActivity() {
             view.findViewById<Button>(R.id.btnCancel).setOnClickListener {
                 dialog.dismiss()
             }
-            if (dialog.window != null){
+            if (dialog.window != null) {
                 dialog.window!!.setBackgroundDrawable(ColorDrawable(0))
             }
             dialog.show()
@@ -76,25 +77,25 @@ class LoginActivity : AppCompatActivity() {
             startActivity(signupIntent)
         }
 
-        if (session.isLoggedIn()){
+        if (session.isLoggedIn()) {
             val i = Intent(applicationContext, MainActivity::class.java)
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(i)
             finish()
         }
     }
-    private fun compareEmail(email: EditText){
-        if (email.text.toString().isEmpty()){
+
+    private fun compareEmail(email: EditText) {
+        if (email.text.toString().isEmpty()) {
             return
         }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email.text.toString()).matches()){
+        if (!Patterns.EMAIL_ADDRESS.matcher(email.text.toString()).matches()) {
             return
         }
-        firebaseAuth.sendPasswordResetEmail(email.text.toString())
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(this, "Check your email", Toast.LENGTH_SHORT).show()
-                }
+        firebaseAuth.sendPasswordResetEmail(email.text.toString()).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(this, "Check your email", Toast.LENGTH_SHORT).show()
             }
+        }
     }
 }

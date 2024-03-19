@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="350dp"
     android:layout_height="210dp"
-    android:padding="10dp"
     android:background="@drawable/nav_header_wallpaper"
+    android:orientation="vertical"
+    android:padding="10dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
         android:layout_width="150dp"
         android:layout_height="130dp"
         android:layout_marginTop="25dp"
-        android:src="@drawable/aklogowhite"
-        />
+        android:src="@drawable/aklogowhite" />
 
 </LinearLayout>

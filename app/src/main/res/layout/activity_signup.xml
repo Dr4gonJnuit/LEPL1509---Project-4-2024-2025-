@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,77 +12,78 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginHorizontal="10dp"
-        app:cardElevation="20dp"
-        android:orientation="vertical"
         android:background="@drawable/blue_border"
-        android:padding="20dp">
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:cardElevation="20dp">
 
         <ImageView
             android:layout_width="125dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
+            android:contentDescription="@string/app_name"
             android:src="@drawable/loginsignup_logo" />
 
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
             android:id="@+id/signup_email"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/blue_border"
-            android:padding="8dp"
-            android:hint="Email"
+            android:drawableStart="@drawable/baseline_email_24"
+            android:drawablePadding="8dp"
+            android:hint="@string/email"
             android:inputType="textEmailAddress"
-            android:drawableLeft="@drawable/baseline_email_24"
-            android:drawablePadding="8dp"
-            android:textColor="@color/black"/>
+            android:padding="8dp"
+            android:textColor="@color/black" />
 
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
             android:id="@+id/signup_password"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/blue_border"
-            android:padding="8dp"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:drawableLeft="@drawable/baseline_lock_24"
-            android:drawablePadding="8dp"
-            android:textColor="@color/black"/>
-
-        <EditText
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:id="@+id/signup_confirm"
             android:layout_marginTop="10dp"
             android:background="@drawable/blue_border"
-            android:padding="8dp"
-            android:hint="Confirm Password"
-            android:inputType="textPassword"
-            android:drawableLeft="@drawable/baseline_lock_24"
+            android:drawableStart="@drawable/baseline_lock_24"
             android:drawablePadding="8dp"
-            android:textColor="@color/black"/>
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:padding="8dp"
+            android:textColor="@color/black" />
+
+        <EditText
+            android:id="@+id/signup_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/blue_border"
+            android:drawableStart="@drawable/baseline_lock_24"
+            android:drawablePadding="8dp"
+            android:hint="@string/password_confirm"
+            android:inputType="textPassword"
+            android:padding="8dp"
+            android:textColor="@color/black" />
 
         <Button
+            android:id="@+id/signup_button"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginTop="15dp"
-            android:text="Sign Up"
-            android:id="@+id/signup_button"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/blue_dark"
             android:background="@drawable/blue_border"
-            android:textSize="18sp"/>
+            android:backgroundTint="@color/blue_dark"
+            android:text="@string/sign_up"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
 
         <TextView
+            android:id="@+id/loginRedirectText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/loginRedirectText"
-            android:text="Already an user? Login"
             android:layout_gravity="center"
-            android:padding="8dp"
             android:layout_marginTop="8dp"
-            android:textSize="18sp"
-            android:textColor="@color/blue_dark"/>
+            android:padding="8dp"
+            android:text="@string/already_an_user_login"
+            android:textColor="@color/blue_dark"
+            android:textSize="18sp" />
 
     </LinearLayout>
 </LinearLayout>
