@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/loginsingup_wallpaper"
+    tools:context=".RolesChoice">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="10dp"
+        app:cardElevation="20dp"
+        android:orientation="vertical"
+        android:background="@drawable/blue_border"
+        android:padding="20dp">
+
+        <ImageView
+            android:layout_width="125dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:src="@drawable/loginsignup_logo"
+            android:contentDescription="@string/app_name"
+            />
+
+        <Button
+            android:id="@+id/employerButton"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/blue_border"
+            android:backgroundTint="@color/blue_dark"
+            android:text="Recrutor"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/employeeButton"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/blue_border"
+            android:backgroundTint="@color/blue_dark"
+            android:text="Job Seeker"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+</LinearLayout>

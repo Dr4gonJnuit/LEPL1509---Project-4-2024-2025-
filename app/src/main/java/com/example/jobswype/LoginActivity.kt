@@ -26,10 +26,12 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         firebaseAuth = FirebaseAuth.getInstance()
+        session = LoginSession(this)
 
         binding.loginButton.setOnClickListener {
             val email = binding.loginEmail.text.toString().trimEnd()
             val password = binding.loginPassword.text.toString()
+            // check le role et renvoie vers la page correspondante
 
             if (email.isNotEmpty() && password.isNotEmpty()){
 
@@ -74,7 +76,6 @@ class LoginActivity : AppCompatActivity() {
             startActivity(signupIntent)
         }
 
-        session = LoginSession(this)
         if (session.isLoggedIn()){
             val i = Intent(applicationContext, MainActivity::class.java)
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -82,8 +83,6 @@ class LoginActivity : AppCompatActivity() {
             finish()
         }
     }
-
-    //Outside onCreate
     private fun compareEmail(email: EditText){
         if (email.text.toString().isEmpty()){
             return

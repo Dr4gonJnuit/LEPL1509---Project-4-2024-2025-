@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import com.example.jobswype.databinding.ActivitySignupBinding
+import com.example.jobswype.session.LoginSession
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -12,7 +13,9 @@ class SignupActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignupBinding
     private lateinit var firebaseAuth: FirebaseAuth
-    private val db = FirebaseFirestore.getInstance() // Firestore instance
+    private val db = FirebaseFirestore.getInstance()
+
+    private lateinit var session: LoginSession
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,6 +23,7 @@ class SignupActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         firebaseAuth = FirebaseAuth.getInstance()
+        session = LoginSession(this)
 
         binding.signupButton.setOnClickListener{
             val email = binding.signupEmail.text.toString().trimEnd()
@@ -34,14 +38,15 @@ class SignupActivity : AppCompatActivity() {
                             val userId = task.result?.user?.uid ?: ""
                             val userMap = hashMapOf(
                                 "userId" to userId,
-                                "email" to email
-                                //TODO ADD USERTYPE FETCHING FROM THE BUTTON
+                                "email" to email,
+                                "role" to "none"
                             )
 
                             db.collection("users").document(userId).set(userMap).addOnSuccessListener {
                                 Toast.makeText(this, "User added to Firestore", Toast.LENGTH_SHORT).show()
                                 // Redirect to MainActivity
-                                val intent = Intent(this, MainActivity::class.java)
+                                session.createLoginSession(password, email)
+                                val intent = Intent(this, RolesChoice::class.java)
                                 startActivity(intent)
                                 finish()
                             }.addOnFailureListener { e ->
@@ -62,6 +67,13 @@ class SignupActivity : AppCompatActivity() {
         binding.loginRedirectText.setOnClickListener {
             val loginIntent = Intent(this, LoginActivity::class.java)
             startActivity(loginIntent)
+        }
+
+        if (session.isLoggedIn()){
+            val i = Intent(applicationContext, MainActivity::class.java)
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(i)
+            finish()
         }
     }
 }
