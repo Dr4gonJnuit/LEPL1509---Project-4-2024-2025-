@@ -50,6 +50,9 @@ import com.example.jobswype.session.LoginSession
 import com.example.jobswype.ui.theme.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
+import com.google.firebase.storage.storage
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -62,6 +65,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvPassword: TextView
     private lateinit var btnLogout: MenuItem
     private lateinit var loginSession: LoginSession
+    var storage = Firebase.storage
+    var storageRef = storage.reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
