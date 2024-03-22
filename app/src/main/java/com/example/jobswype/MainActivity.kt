@@ -1,5 +1,6 @@
 package com.example.jobswype
 
+import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Button
@@ -71,20 +72,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        /*
-        setContent {
-            // Use the Surface component with a modifier to set the background color
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White), // Modifier.fillMaxSize() ensures the background fills the entire screen
-                color = MaterialTheme.colorScheme.background
-            ) {
-                // Your app content goes here
-                MyAppContent()
-                LogoutAction()
-            }
-        }*/
 
         // Navigation Drawer
         drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
@@ -169,7 +156,7 @@ class MainActivity : AppCompatActivity() {
 }
 
 @Composable
-fun MyAppContent() {
+fun MyAppContent(context: Context) {
     val images = listOf(
         R.drawable.defaultimg,
         R.drawable.cv1, R.drawable.cv2, R.drawable.cv3,
@@ -216,7 +203,12 @@ fun MyAppContent() {
                             if (currentIndex + 1 < images.size && currentIndex != 0)
                                 currentIndex = (currentIndex + 1)
                             else
-                                currentIndex = 0
+                                // Afficher un message pour dire qu'il n'y a plus d'offres
+                                Toast.makeText(
+                                    context,
+                                    "Il n'y a plus d'offres disponibles",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                         }
                         offsetX = 0f // Reset drag amount whether swiped or not
                     }) { change, dragAmount ->
@@ -264,10 +256,13 @@ fun MyAppContent() {
                                 if (currentIndex + 1 < images.size && currentIndex != 0)
                                     currentIndex = (currentIndex + 1)
                                 else
-                                    currentIndex =
-                                        0 // if the current index is the last image, it will go back to a defaukt image
+                                    // Afficher un message pour dire qu'il n'y a plus d'offres
+                                    Toast.makeText(
+                                        context,
+                                        "Il n'y a plus d'offres disponibles",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                             }
-
                         },
                         modifier = Modifier
                             .weight(1f)
@@ -293,7 +288,12 @@ fun MyAppContent() {
                                 if (currentIndex + 1 < images.size && currentIndex != 0)
                                     currentIndex = (currentIndex + 1)
                                 else
-                                    currentIndex = 0
+                                // Afficher un message pour dire qu'il n'y a plus d'offres
+                                    Toast.makeText(
+                                        context,
+                                        "Il n'y a plus d'offres disponibles",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                             }
                         },
                         modifier = Modifier
