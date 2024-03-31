@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/logo_color"
-    android:layout_marginBottom="80dp"
+    android:layout_marginBottom="55dp"
     tools:context=".MainActivity">
 
         <LinearLayout
@@ -29,11 +29,10 @@
                     android:padding="3dp"
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/blue_profile_bkg"
-                    android:src="@drawable/default_pdp"
                     android:contentDescription="@string/img_content_desc" />
 
                 <TextView
-                    android:id="@+id/profiletitleName"
+                    android:id="@+id/profileUsername"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -72,7 +71,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
                     android:background="@drawable/profile_border"
-                    app:drawableStartCompat="@drawable/baseline_phone_24"                    android:drawablePadding="10dp"
+                    app:drawableStartCompat="@drawable/baseline_phone_24"
+                    android:drawablePadding="10dp"
                     android:hint="@string/phoneNumber"
                     android:textSize="18sp"
                     android:padding="15dp"
@@ -91,102 +91,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:text="@string/about_me"
+                        android:text="About Me"
                         android:textColor="@color/blue_dark"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/profileSummary"
+                        android:id="@+id/profileAboutMe"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAlignment="gravity"
                         android:hint="@string/summary"
-                        android:textSize="17sp"
-                        android:textColor="@color/black" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/profile_border"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="20dp"
-                    android:padding="15dp">
-
-                    <TextView
-                        android:id="@+id/jobExperience"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:text="@string/experience"
-                        android:textColor="@color/blue_dark"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/descJobExperience"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="gravity"
-                        android:hint="@string/job_exp_desc"
-                        android:textSize="17sp"
-                        android:textColor="@color/black" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/profile_border"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="20dp"
-                    android:padding="15dp">
-
-                    <TextView
-                        android:id="@+id/education"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:text="@string/education"
-                        android:textColor="@color/blue_dark"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/descEducation"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="gravity"
-                        android:hint="@string/education_desc"
-                        android:textSize="17sp"
-                        android:textColor="@color/black" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/profile_border"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="20dp"
-                    android:padding="15dp">
-
-                    <TextView
-                        android:id="@+id/projectsRewards"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:text="@string/projects_and_rewards"
-                        android:textColor="@color/blue_dark"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/projectsRewardsDesc"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="gravity"
-                        android:hint="@string/proj_and_rew_desc"
-                        android:textSize="17sp"
+                        android:textSize="18sp"
                         android:textColor="@color/black" />
                 </LinearLayout>
 

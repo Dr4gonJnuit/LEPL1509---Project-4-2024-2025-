@@ -118,6 +118,7 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
         replaceFragment(HomeFragment())
     }
 
@@ -154,6 +155,7 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 }
+
 
 @Composable
 fun MyAppContent(context: Context) {

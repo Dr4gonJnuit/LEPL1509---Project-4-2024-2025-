@@ -17,10 +17,9 @@
     <string name="enter_your_email_address">Enter your email address</string>
     <string name="cancel">Cancel</string>
     <string name="reset">Reset</string>
-    <string name="name">Name</string>
+    <string name="name">Username</string>
     <string name="user_type_maj">User Type</string>
     <string name="usertype_min">usertype</string>
-    <string name="about_me">Summary</string>
     <string name="add_more_details">Add more details</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="summary">Describe yourself, showcase your skills, and let employers know what you have to offer.</string>
@@ -33,4 +32,5 @@
     <string name="education_desc">Describe here the last degree you obtained and the institution where you studied. Mention the year of graduation and the most relevant subjects you studied. Highlight your skills and knowledge.</string>
     <string name="projects_and_rewards">Projects and Rewards</string>
     <string name="proj_and_rew_desc">List your projects and rewards here. Showcase you leadership and team work skills. Highlight your achievements.</string>
+    <string name="phonenumber_maj">0412345678</string>
 </resources>

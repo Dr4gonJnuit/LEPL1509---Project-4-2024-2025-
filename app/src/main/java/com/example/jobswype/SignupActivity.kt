@@ -40,6 +40,11 @@ class SignupActivity : AppCompatActivity() {
                                 val userMap = hashMapOf(
                                     "userId" to userId,
                                     "email" to email,
+                                    "password" to password,
+                                    "phone" to "none",
+                                    "aboutme" to "none",
+                                    "username" to "none",
+                                    "profilePic" to "none",
                                     "role" to "none"
                                 )
 
