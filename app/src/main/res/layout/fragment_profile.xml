@@ -61,7 +61,7 @@
                     android:textSize="18sp"
                     app:drawableStartCompat="@drawable/baseline_email_24"
                     android:drawablePadding="10dp"
-                    android:hint="@string/email"
+                    android:text="@string/email"
                     android:padding="15dp"
                     android:textColor="@color/black"/>
 
@@ -73,7 +73,7 @@
                     android:background="@drawable/profile_border"
                     app:drawableStartCompat="@drawable/baseline_phone_24"
                     android:drawablePadding="10dp"
-                    android:hint="@string/phoneNumber"
+                    android:text="@string/phoneNumber"
                     android:textSize="18sp"
                     android:padding="15dp"
                     android:textColor="@color/black" />
@@ -101,7 +101,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAlignment="gravity"
-                        android:hint="@string/summary"
+                        android:text="@string/summary"
                         android:textSize="18sp"
                         android:textColor="@color/black" />
                 </LinearLayout>

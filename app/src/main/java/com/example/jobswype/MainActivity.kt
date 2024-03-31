@@ -3,7 +3,9 @@ package com.example.jobswype
 import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -44,28 +46,29 @@ import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.jobswype.session.LoginSession
 import com.example.jobswype.ui.theme.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.storage
 import kotlinx.coroutines.launch
 import kotlin.math.abs
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.bumptech.glide.request.RequestOptions
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var bottomNavigationView: BottomNavigationView
-    private lateinit var navDrawer: NavigationView
-    private lateinit var tvEmail: TextView
-    private lateinit var tvPassword: TextView
-    private lateinit var btnLogout: MenuItem
-    private lateinit var loginSession: LoginSession
     var storage = Firebase.storage
     var storageRef = storage.reference
 
@@ -118,7 +121,6 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-
         replaceFragment(HomeFragment())
     }
 
@@ -156,6 +158,58 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
+fun loadUserData(view: View, context: Context) {
+    // Initialize views
+    val profileImg = view.findViewById<ImageView>(R.id.profileImg)
+    val profileUsername = view.findViewById<TextView>(R.id.profileUsername)
+    val profileEmail = view.findViewById<TextView>(R.id.profileEmail)
+    val profilePhone = view.findViewById<TextView>(R.id.profilePhone)
+    val profileAboutMe = view.findViewById<TextView>(R.id.profileAboutMe)
+
+    // Initialize Firebase instances
+    val auth = FirebaseAuth.getInstance()
+    val firestore = FirebaseFirestore.getInstance()
+
+    val currentUser = auth.currentUser
+    val userId = currentUser?.uid
+    val userRef = firestore.collection("users").document(userId!!)
+
+    userRef.get().addOnSuccessListener { user ->
+        if (user != null) {
+            // Get user data
+            val username = user.getString("username")
+            val email = user.getString("email")
+            val phone = user.getString("phone")
+            val aboutMe = user.getString("aboutme")
+            val profileImageUrl = user.getString("profilePic")
+
+            // Set user data to views
+            profileUsername.text = username
+            profileEmail.text = email
+            profilePhone.text = phone
+            profileAboutMe.text = aboutMe
+
+            // Load profile image using Glide
+            profileImageUrl?.let {
+                Glide.with(context)
+                    .load(it)
+                    .apply(RequestOptions.bitmapTransform(CircleCrop())) // Appliquer un cercle de transformation
+                    .placeholder(R.drawable.default_pdp) // Placeholder image while loading
+                    .error(R.drawable.default_pdp) // Image to show if loading fails
+                    .into(profileImg)
+                }
+
+            } else {
+            // Document does not exist
+        }
+    }.addOnFailureListener { e ->
+        Toast.makeText(
+            context,
+            "Error updating field(s): $e",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+}
 
 @Composable
 fun MyAppContent(context: Context) {

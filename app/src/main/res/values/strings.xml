@@ -22,15 +22,10 @@
     <string name="usertype_min">usertype</string>
     <string name="add_more_details">Add more details</string>
     <string name="edit_profile">Edit Profile</string>
-    <string name="summary">Describe yourself, showcase your skills, and let employers know what you have to offer.</string>
+    <string name="summary">Describe yourself, showcase your skills, and let employers know what you
+        have to offer.</string>
     <string name="phoneNumber">0412345678</string>
     <string name="email">Contact@JobSwype.be</string>
-    <string name="img_content_desc">Photo de profil, modifie dans editProfile et doit être sync ici et dans nav_drawer</string>
-    <string name="experience">Experience</string>
-    <string name="job_exp_desc">Describe here your most valuable experiences. Explain what you did, what you learned, and how you can apply it in the job you are looking for. Be precise and concise. Atract employers with your skills and knowledge.</string>
-    <string name="education">Education</string>
-    <string name="education_desc">Describe here the last degree you obtained and the institution where you studied. Mention the year of graduation and the most relevant subjects you studied. Highlight your skills and knowledge.</string>
-    <string name="projects_and_rewards">Projects and Rewards</string>
-    <string name="proj_and_rew_desc">List your projects and rewards here. Showcase you leadership and team work skills. Highlight your achievements.</string>
+    <string name="img_content_desc">Photo de profil</string>
     <string name="phonenumber_maj">0412345678</string>
 </resources>

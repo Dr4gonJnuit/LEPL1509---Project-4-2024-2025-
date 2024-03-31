@@ -53,10 +53,10 @@ android {
 
 dependencies {
     // Import the BoM for the Firebase platform
-    implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
+    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("com.google.firebase:firebase-storage")
     implementation("com.github.bumptech.glide:glide:4.12.0")
-
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
     // Declare the dependency for the Cloud Firestore library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.google.firebase:firebase-firestore")

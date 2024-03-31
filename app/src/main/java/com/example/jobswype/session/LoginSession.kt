@@ -44,7 +44,7 @@ class LoginSession {
     fun getUserDetails(): HashMap<String, String> {
         val user: Map<String, String> = HashMap<String, String>()
         (user as HashMap).put(KEY_PASSWORD, sess.getString(KEY_PASSWORD, null)!!)
-        (user as HashMap).put(KEY_EMAIL, sess.getString(KEY_EMAIL, null)!!)
+        user.put(KEY_EMAIL, sess.getString(KEY_EMAIL, null)!!)
         return user
     }
 
