@@ -250,26 +250,39 @@ fun saveUserLiked(imageUrl: String, liked: Boolean) {
 
     // Get user profiles liked
     userRef.get().addOnSuccessListener { userData ->
-        val arrayOfLiked = userData.get("liked") as HashMap<String, Boolean>
+        val likedMap = userData.get("liked") as? HashMap<String, Boolean> ?: hashMapOf()
 
+        // Get the image reference from the Firebase Storage URL
         val imageRef = imageUrl.let { storageRef.getReferenceFromUrl(it) }
+
+        // Retrieve metadata for the image
         imageRef.metadata.addOnSuccessListener { metadata ->
-            val userLikedID = metadata.getCustomMetadata("userID") as String
+            // Extract the UID associated with the image
+            val userLikedID = metadata.getCustomMetadata("userID")
 
-            updateUserLikedStatus(arrayOfLiked, userLikedID, liked)
+            // Check if the UID exists and if the user liked the image
+            if (userLikedID != null) {
+                // Add the UID with associated liked status to the liked HashMap
+                likedMap[userLikedID] = liked
 
-            // Update the document with the modified array
-            val data = hashMapOf("liked" to arrayOfLiked)
-            userRef.update(data as Map<String, Boolean>)
-                .addOnSuccessListener {
-                    // Document updated successfully
-                    Log.w(TAG, "User added to liked")
+                // Update the user's data in Firestore
+                userRef.update(
+                    mapOf(
+                        "liked" to likedMap
+                    )
+                ).addOnSuccessListener {
+                    println("User's liked/disliked images updated successfully")
+                }.addOnFailureListener { e ->
+                    println("Error updating user's liked/disliked images: $e")
                 }
-                .addOnFailureListener { exception ->
-                    // Handle failure
-                    Log.w(TAG, "User added to liked", exception)
-                }
+            } else {
+                println("User ID not found in image metadata")
+            }
+        }.addOnFailureListener { e ->
+            println("Error getting image metadata: $e")
         }
+    }.addOnFailureListener { e ->
+        println("Error getting user data: $e")
     }
 }
 
@@ -306,44 +319,26 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                             animatedOffsetX.animateTo(0f)
                         }
                         if (abs(offsetX) > 200) {
-
-                            // Add the detect for sliding the finger across the screen
-                            if (offsetX > 0) {
-                                Toast
-                                    .makeText(
-                                        context,
-                                        "Sliding... Right",
-                                        Toast.LENGTH_SHORT
-                                    )
-                                    .show()
+                            if (offsetX > 200) {
                                 // User swiped right (like)
                                 if (imageUrl != null) {
                                     saveUserLiked(imageUrl = imageUrl, liked = true)
                                 }
-                            } else {
-                                Toast
-                                    .makeText(
-                                        context,
-                                        "Sliding... Left",
-                                        Toast.LENGTH_SHORT
-                                    )
-                                    .show()
+                            } else if (offsetX < -200) {
                                 // User swiped left (dislike)
                                 if (imageUrl != null) {
                                     saveUserLiked(imageUrl = imageUrl, liked = false)
                                 }
                             }
 
-                            if (currentIndex + 1 < imageUrls.size) {
+                            if (currentIndex + 1 <= imageUrls.size) {
                                 currentIndex += 1
                             } else {
-                                Toast
-                                    .makeText(
-                                        context,
-                                        "No more offers available",
-                                        Toast.LENGTH_SHORT
-                                    )
-                                    .show()
+                                Toast.makeText(
+                                    context,
+                                    "No more offers available",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
                         offsetX = 0f
@@ -366,7 +361,7 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                 )
             } else {
                 Text(
-                    "Loading...",
+                    "No more offers available",
                     color = Color.White
                 )
             }
@@ -401,7 +396,7 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                                 saveUserLiked(imageUrl = imageUrl, liked = false)
                             }
 
-                            if (currentIndex + 1 < imageUrls.size) {
+                            if (currentIndex + 1 <= imageUrls.size) {
                                 currentIndex += 1
                             } else {
                                 Toast.makeText(
@@ -438,7 +433,7 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                                 saveUserLiked(imageUrl = imageUrl, liked = true)
                             }
 
-                            if (currentIndex + 1 < imageUrls.size) {
+                            if (currentIndex + 1 <= imageUrls.size) {
                                 currentIndex += 1
                             } else {
                                 Toast.makeText(

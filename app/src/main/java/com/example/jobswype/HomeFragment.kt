@@ -48,8 +48,8 @@ class HomeFragment : Fragment() {
         if (currentUser != null) {
             firestore.collection("users").document(currentUser.uid).get().addOnSuccessListener { document ->
                 val role = document.getString("role") ?: ""
-                val targetRole = if (role.equals("Recrutor", ignoreCase = true)) "JobSeeker" else "Recrutor"
-                val field = if (role.equals("Recrutor", ignoreCase = true)) "cv" else "job_offer"
+                val targetRole = if (role.equals("Recruiter", ignoreCase = true)) "JobSeeker" else "Recrutor"
+                val field = if (role.equals("Recruiter", ignoreCase = true)) "cv" else "job_offer"
 
                 firestore.collection("users").whereEqualTo("role", targetRole).get().addOnSuccessListener { querySnapshot ->
                     val urls = querySnapshot.documents.mapNotNull { it.getString(field) }.toList()

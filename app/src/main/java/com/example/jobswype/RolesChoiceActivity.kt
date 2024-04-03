@@ -26,7 +26,7 @@ class RolesChoice : AppCompatActivity() {
 
         Toast.makeText(this, "Choice beginning", Toast.LENGTH_SHORT).show()
         binding.employerButton.setOnClickListener {
-            updateRole(currentUser?.uid, "Recrutor")
+            updateRole(currentUser?.uid, "Recruiter")
         }
 
         binding.employeeButton.setOnClickListener {

@@ -31,7 +31,7 @@
             android:layout_marginTop="15dp"
             android:background="@drawable/blue_border"
             android:backgroundTint="@color/blue_dark"
-            android:text="@string/choice_recrutor"
+            android:text="@string/choice_recruiter"
             android:textColor="@color/white"
             android:textSize="18sp" />
 

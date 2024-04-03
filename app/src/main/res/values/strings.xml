@@ -2,7 +2,7 @@
     <string name="app_name">JobSwype</string>
     <string name="open_nav">Open Navigation Drawer</string>
     <string name="close_nav">Close Navigation Drawer</string>
-    <string name="choice_recrutor">Recrutor</string>
+    <string name="choice_recruiter">Recruiter</string>
     <string name="choice_job_seeker">Job Seeker</string>
     <string name="email_maj">Email</string>
     <string name="email_min">email</string>
