@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -21,14 +20,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -48,29 +44,25 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.bumptech.glide.request.RequestOptions
 import com.example.jobswype.session.LoginSession
-import com.example.jobswype.ui.theme.*
+import com.example.jobswype.ui.theme.Blue_light
+import com.example.jobswype.ui.theme.Purple80
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.storage
 import kotlinx.coroutines.launch
 import kotlin.math.abs
-import com.bumptech.glide.load.resource.bitmap.CircleCrop
-import com.bumptech.glide.request.RequestOptions
 
 
 class MainActivity : AppCompatActivity() {
@@ -217,7 +209,7 @@ fun loadUserData(view: View, context: Context) {
             profileImageUrl?.let {
                 Glide.with(context)
                     .load(it)
-                    .apply(RequestOptions.bitmapTransform(CircleCrop())) // Appliquer un cercle de transformation
+                    .apply(RequestOptions.bitmapTransform(CircleCrop())) // Apply a transform circle
                     .placeholder(R.drawable.default_pdp) // Placeholder image while loading
                     .error(R.drawable.default_pdp) // Image to show if loading fails
                     .into(profileImg)
@@ -241,7 +233,12 @@ fun loadUserData(view: View, context: Context) {
     }
 }
 
-fun saveUserLiked(imageUrl: String) {
+// Update liked users dynamically
+fun updateUserLikedStatus(arrayOfLiked: HashMap<String, Boolean>, userId: String, liked: Boolean) {
+    arrayOfLiked[userId] = liked
+}
+
+fun saveUserLiked(imageUrl: String, liked: Boolean) {
     // Initialize Firebase instances
     val auth = FirebaseAuth.getInstance()
     val firestore = FirebaseFirestore.getInstance()
@@ -251,23 +248,19 @@ fun saveUserLiked(imageUrl: String) {
     val userId = currentUser?.uid
     val userRef = firestore.collection("users").document(userId!!)
 
-    // Get user profils liked
+    // Get user profiles liked
     userRef.get().addOnSuccessListener { userData ->
-        val arrayOfLiked = userData.get("liked") as ArrayList<String?>
+        val arrayOfLiked = userData.get("liked") as HashMap<String, Boolean>
 
         val imageRef = imageUrl.let { storageRef.getReferenceFromUrl(it) }
         imageRef.metadata.addOnSuccessListener { metadata ->
-            val userLikedID = metadata.getCustomMetadata("userID")
+            val userLikedID = metadata.getCustomMetadata("userID") as String
 
-            if (arrayOfLiked[0] == "none") {
-                arrayOfLiked[0] = userLikedID
-            } else {
-                arrayOfLiked.add(userLikedID)
-            }
+            updateUserLikedStatus(arrayOfLiked, userLikedID, liked)
 
             // Update the document with the modified array
             val data = hashMapOf("liked" to arrayOfLiked)
-            userRef.update(data as Map<String, Any>)
+            userRef.update(data as Map<String, Boolean>)
                 .addOnSuccessListener {
                     // Document updated successfully
                     Log.w(TAG, "User added to liked")
@@ -313,6 +306,34 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                             animatedOffsetX.animateTo(0f)
                         }
                         if (abs(offsetX) > 200) {
+
+                            // Add the detect for sliding the finger across the screen
+                            if (offsetX > 0) {
+                                Toast
+                                    .makeText(
+                                        context,
+                                        "Sliding... Right",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                    .show()
+                                // User swiped right (like)
+                                if (imageUrl != null) {
+                                    saveUserLiked(imageUrl = imageUrl, liked = true)
+                                }
+                            } else {
+                                Toast
+                                    .makeText(
+                                        context,
+                                        "Sliding... Left",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                    .show()
+                                // User swiped left (dislike)
+                                if (imageUrl != null) {
+                                    saveUserLiked(imageUrl = imageUrl, liked = false)
+                                }
+                            }
+
                             if (currentIndex + 1 < imageUrls.size) {
                                 currentIndex += 1
                             } else {
@@ -375,6 +396,11 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                                 0f,
                                 animationSpec = TweenSpec(durationMillis = 200)
                             )
+
+                            if (imageUrl != null) {
+                                saveUserLiked(imageUrl = imageUrl, liked = false)
+                            }
+
                             if (currentIndex + 1 < imageUrls.size) {
                                 currentIndex += 1
                             } else {
@@ -409,7 +435,7 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                             )
 
                             if (imageUrl != null) {
-                                saveUserLiked(imageUrl = imageUrl)
+                                saveUserLiked(imageUrl = imageUrl, liked = true)
                             }
 
                             if (currentIndex + 1 < imageUrls.size) {
