@@ -45,7 +45,8 @@ class SignupActivity : AppCompatActivity() {
                                     "aboutme" to "none",
                                     "username" to "none",
                                     "profilePic" to "none",
-                                    "role" to "none"
+                                    "role" to "none",
+                                    "liked" to arrayListOf("none")
                                 )
 
                                 db.collection("users").document(userId).set(userMap)

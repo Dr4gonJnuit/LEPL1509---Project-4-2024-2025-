@@ -1,7 +1,9 @@
 package com.example.jobswype
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
@@ -215,6 +217,45 @@ fun loadUserData(view: View, context: Context) {
     }
 }
 
+fun saveUserLiked(imageUrl: String) {
+    // Initialize Firebase instances
+    val auth = FirebaseAuth.getInstance()
+    val firestore = FirebaseFirestore.getInstance()
+    val storageRef = Firebase.storage
+
+    val currentUser = auth.currentUser
+    val userId = currentUser?.uid
+    val userRef = firestore.collection("users").document(userId!!)
+
+    // Get user profils liked
+    userRef.get().addOnSuccessListener { userData ->
+        val arrayOfLiked = userData.get("liked") as ArrayList<String?>
+
+        val imageRef = imageUrl.let { storageRef.getReferenceFromUrl(it) }
+        imageRef.metadata.addOnSuccessListener { metadata ->
+            val userLikedID = metadata.getCustomMetadata("userID")
+
+            if (arrayOfLiked[0] == "none") {
+                arrayOfLiked[0] = userLikedID
+            } else {
+                arrayOfLiked.add(userLikedID)
+            }
+
+            // Update the document with the modified array
+            val data = hashMapOf("liked" to arrayOfLiked)
+            userRef.update(data as Map<String, Any>)
+                .addOnSuccessListener {
+                    // Document updated successfully
+                    Log.w(TAG, "User added to liked")
+                }
+                .addOnFailureListener { exception ->
+                    // Handle failure
+                    Log.w(TAG, "User added to liked", exception)
+                }
+        }
+    }
+}
+
 @Composable
 fun MyAppContent(context: Context, imageUrls: List<String>) {
     var currentIndex by remember { mutableStateOf(0) }
@@ -251,11 +292,13 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                             if (currentIndex + 1 < imageUrls.size) {
                                 currentIndex += 1
                             } else {
-                                Toast.makeText(
-                                    context,
-                                    "No more offers available",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                Toast
+                                    .makeText(
+                                        context,
+                                        "No more offers available",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                    .show()
                             }
                         }
                         offsetX = 0f
@@ -340,6 +383,11 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                                 0f,
                                 animationSpec = TweenSpec(durationMillis = 200)
                             )
+
+                            if (imageUrl != null) {
+                                saveUserLiked(imageUrl = imageUrl)
+                            }
+
                             if (currentIndex + 1 < imageUrls.size) {
                                 currentIndex += 1
                             } else {

@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.storageMetadata
 import java.util.*
 
 private const val UPLOAD_PP_REQUEST_CODE = 1001
@@ -33,15 +34,16 @@ class SettingsFragment : Fragment() {
     private var requestCode: Int = 0
     private var auth: FirebaseAuth? = null
 
-    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val data: Intent? = result.data
-            val selectedImageUri = data?.data
-            if (selectedImageUri != null) {
-                uploadImageToFirebase(selectedImageUri, requestCode)
+    private val pickImageLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                val selectedImageUri = data?.data
+                if (selectedImageUri != null) {
+                    uploadImageToFirebase(selectedImageUri, requestCode)
+                }
             }
         }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -103,12 +105,17 @@ class SettingsFragment : Fragment() {
     }
 
     private fun uploadImageToFirebase(imageUri: Uri?, requestCode: Int) {
+        val user = auth?.currentUser
+
         if (imageUri != null) {
             val imageFileName = UUID.randomUUID().toString()
             val imageRef = storageRef?.child("images/$imageFileName")
+            val metadata = storageMetadata {
+                setCustomMetadata("userID", user?.uid)
+            }
 
-            val uploadTask = imageRef?.putFile(imageUri)
-            uploadTask?.addOnSuccessListener { taskSnapshot ->
+            val uploadTask = imageRef?.putFile(imageUri, metadata)
+            uploadTask?.addOnSuccessListener { _ ->
                 imageRef.downloadUrl.addOnSuccessListener { uri ->
                     val downloadUrl = uri.toString()
                     println(requestCode)
@@ -119,7 +126,11 @@ class SettingsFragment : Fragment() {
                     }
                 }
             }?.addOnFailureListener { exception ->
-                Toast.makeText(requireContext(), "Image upload failed: ${exception.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Image upload failed: ${exception.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         } else {
             Toast.makeText(requireContext(), "No image selected", Toast.LENGTH_SHORT).show()
@@ -142,24 +153,44 @@ class SettingsFragment : Fragment() {
                 if (role == "JobSeeker") {
                     userRef.update("cv", imageUrl)
                         .addOnSuccessListener {
-                            Toast.makeText(requireContext(), "Image data saved to CV", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                requireContext(),
+                                "Image data saved to CV",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                         .addOnFailureListener { e ->
-                            Toast.makeText(requireContext(), "Error saving image data: $e", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                requireContext(),
+                                "Error saving image data: $e",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                 } else {
                     userRef.update("job_offer", imageUrl)
                         .addOnSuccessListener {
-                            Toast.makeText(requireContext(), "Image data saved to job offer", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                requireContext(),
+                                "Image data saved to job offer",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                         .addOnFailureListener { e ->
-                            Toast.makeText(requireContext(), "Error saving image data: $e", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                requireContext(),
+                                "Error saving image data: $e",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                 }
             }
                 // Handle failure to get user role
                 ?.addOnFailureListener { e ->
-                    Toast.makeText(requireContext(), "Error getting user role: $e", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Error getting user role: $e",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
         }
     }
@@ -190,7 +221,7 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    private fun editProfileInfo(field: String, info: String){
+    private fun editProfileInfo(field: String, info: String) {
         val user = auth?.currentUser
         user?.let {
             val userId = it.uid
