@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.compose.animation.core.Animatable
@@ -131,13 +132,23 @@ class MainActivity : AppCompatActivity() {
     @Override
     fun setNavigationItemSelectedListener(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_settings -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, SettingsFragment()).commit()
+            R.id.nav_settings -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, SettingsFragment()).commit()
+            }
 
             R.id.nav_logout -> {
-                val loginSession = LoginSession(this)
-                loginSession.logoutUser()
-                finish()
+                AlertDialog.Builder(this) // Use 'this' (activity's context) instead of 'context'
+                    .setTitle("Logout")
+                    .setMessage("Are you sure you want to logout?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        FirebaseAuth.getInstance().signOut()
+                        val loginSession = LoginSession(this)
+                        loginSession.logoutUser()
+                        finish()
+                    }
+                    .setNegativeButton("No", null)
+                    .show() // Show the AlertDialog
             }
         }
         drawerLayout.closeDrawer(GravityCompat.START)
@@ -181,17 +192,24 @@ fun loadUserData(view: View, context: Context) {
     userRef.get().addOnSuccessListener { user ->
         if (user != null) {
             // Get user data
-            val username = user.getString("username")
             val email = user.getString("email")
-            val phone = user.getString("phone")
-            val aboutMe = user.getString("aboutme")
+
+            var username = user.getString("username")
+            if(username == "none") {
+                username = email?.substring(0, email.indexOf('@'))
+            }
+
+            var phone = user.getString("phone")
+            if (phone == "none") {
+                phone = ""
+            }
+
+            var aboutMe = user.getString("aboutme")
+            if (aboutMe == "none") {
+                aboutMe = ""
+            }
             val profileImageUrl = user.getString("profilePic")
 
-            // Set user data to views
-            profileUsername.text = username
-            profileEmail.text = email
-            profilePhone.text = phone
-            profileAboutMe.text = aboutMe
 
             // Load profile image using Glide
             profileImageUrl?.let {
@@ -202,6 +220,12 @@ fun loadUserData(view: View, context: Context) {
                     .error(R.drawable.default_pdp) // Image to show if loading fails
                     .into(profileImg)
                 }
+            // Set user data to views
+            profileUsername.text = username
+            profileEmail.text = email
+            profilePhone.text = phone
+            profileAboutMe.text = aboutMe
+
 
             } else {
             // Document does not exist

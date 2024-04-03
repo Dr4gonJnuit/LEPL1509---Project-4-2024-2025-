@@ -28,7 +28,6 @@
                     android:layout_marginTop="10dp"
                     android:padding="3dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/blue_profile_bkg"
                     android:contentDescription="@string/img_content_desc" />
 
                 <TextView
@@ -37,7 +36,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="10dp"
-                    android:text="@string/name"
                     android:textColor="@color/blue_dark"
                     android:textSize="25sp"
                     android:textStyle="bold"
@@ -61,7 +59,6 @@
                     android:textSize="18sp"
                     app:drawableStartCompat="@drawable/baseline_email_24"
                     android:drawablePadding="10dp"
-                    android:text="@string/email"
                     android:padding="15dp"
                     android:textColor="@color/black"/>
 
@@ -73,7 +70,6 @@
                     android:background="@drawable/profile_border"
                     app:drawableStartCompat="@drawable/baseline_phone_24"
                     android:drawablePadding="10dp"
-                    android:text="@string/phoneNumber"
                     android:textSize="18sp"
                     android:padding="15dp"
                     android:textColor="@color/black" />
@@ -101,7 +97,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAlignment="gravity"
-                        android:text="@string/summary"
                         android:textSize="18sp"
                         android:textColor="@color/black" />
                 </LinearLayout>
