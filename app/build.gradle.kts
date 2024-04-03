@@ -85,4 +85,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation("com.google.firebase:firebase-storage:20.3.0")
+    implementation("io.coil-kt:coil:2.6.0")
+
 }

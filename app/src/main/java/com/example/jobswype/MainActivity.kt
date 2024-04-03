@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -43,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -50,6 +52,8 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import com.bumptech.glide.Glide
 import com.example.jobswype.session.LoginSession
 import com.example.jobswype.ui.theme.*
@@ -212,157 +216,150 @@ fun loadUserData(view: View, context: Context) {
 }
 
 @Composable
-fun MyAppContent(context: Context) {
-    val images = listOf(
-        R.drawable.defaultimg,
-        R.drawable.cv1, R.drawable.cv2, R.drawable.cv3,
-        R.drawable.cv4, R.drawable.cv5, R.drawable.cv6,
-        R.drawable.cv7, R.drawable.cv8, R.drawable.cv9,
-    )
-    var currentIndex by remember { mutableStateOf(1) }
-    val image = images[currentIndex]
+fun MyAppContent(context: Context, imageUrls: List<String>) {
+    var currentIndex by remember { mutableStateOf(0) }
+    val imageUrl = imageUrls.getOrNull(currentIndex)
 
     // State for tracking drag amount
     var offsetX by remember { mutableStateOf(0f) }
-    // Animate back to original position when not dragging
     val coroutineScope = rememberCoroutineScope()
     val animatedOffsetX = remember { Animatable(0f) }
-    /*
-    val animatedOffsetX by animateFloatAsState(
-        targetValue = offsetX,
-        finishedListener = { offsetX = 0f })
-    */
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Blue_light)
-            .padding(top = 60.dp), // Ajuster la valeur de top selon l'espace souhaité
+            .padding(top = 20.dp, bottom = 50.dp), // Adjusted top and bottom padding
         contentAlignment = Alignment.TopCenter
     ) {
-        Image(
-            painter = painterResource(id = image),
-            contentDescription = "Swipeable Image",
+        // Image container
+        Box(
             modifier = Modifier
-                .size(550.dp)
+                .fillMaxWidth() // Ensures the image fills the width of its container
+                .height(550.dp) // Specifies a fixed height for the image
+                .clip(RoundedCornerShape(20.dp)) // Applies rounded corners
                 .graphicsLayer {
-                    // Apply translation and rotation based on drag
                     translationX = animatedOffsetX.value
-                    rotationZ = animatedOffsetX.value * 0.1f // Slight rotation for effect
+                    rotationZ = animatedOffsetX.value * 0.1f
                 }
                 .pointerInput(Unit) {
                     detectDragGestures(onDragEnd = {
                         coroutineScope.launch {
                             animatedOffsetX.animateTo(0f)
                         }
-                        if (abs(offsetX) > 200) { // Threshold to consider as swipe
-                            // Move to next image
-                            if (currentIndex + 1 < images.size && currentIndex != 0)
-                                currentIndex = (currentIndex + 1)
-                            else
-                                // Afficher un message pour dire qu'il n'y a plus d'offres
+                        if (abs(offsetX) > 200) {
+                            if (currentIndex + 1 < imageUrls.size) {
+                                currentIndex += 1
+                            } else {
                                 Toast.makeText(
                                     context,
-                                    "Il n'y a plus d'offres disponibles",
+                                    "No more offers available",
                                     Toast.LENGTH_SHORT
                                 ).show()
+                            }
                         }
-                        offsetX = 0f // Reset drag amount whether swiped or not
+                        offsetX = 0f
                     }) { change, dragAmount ->
                         if (change.positionChange() != Offset.Zero) change.consume()
-                        offsetX += dragAmount.x // Update drag amount
+                        offsetX += dragAmount.x
                         coroutineScope.launch {
                             animatedOffsetX.snapTo(offsetX)
                         }
                     }
-                }
-                .clip(RoundedCornerShape(20.dp))
-        )
+                },
+            contentAlignment = Alignment.Center // Aligning content in the center
+        ) {
+            if (currentIndex < imageUrls.size) {
+                Image(
+                    painter = rememberAsyncImagePainter(model = imageUrl),
+                    contentDescription = "Swipeable Image",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.FillBounds // Stretches the image to fill the specified width and height
+                )
+            } else {
+                Text(
+                    "Loading...",
+                    color = Color.White
+                )
+            }
+        }
+
+        // Buttons layout
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(10.dp),
-            contentAlignment = Alignment.BottomCenter
+                .fillMaxWidth()
+                .padding(16.dp)
+                .align(Alignment.BottomCenter)
         ) {
-            // Buttons layout
-            Column(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(500.dp)
-                    .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 85.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Bottom
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Row(
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            animatedOffsetX.animateTo(
+                                -300f,
+                                animationSpec = TweenSpec(durationMillis = 200)
+                            ) // target value is -300 because its swiping to left
+                            animatedOffsetX.animateTo(
+                                0f,
+                                animationSpec = TweenSpec(durationMillis = 200)
+                            )
+                            if (currentIndex + 1 < imageUrls.size) {
+                                currentIndex += 1
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "No more offers available",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    },
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    horizontalArrangement = Arrangement.Center
+                        .weight(1f)
+                        .height(50.dp)
+                        .padding(end = 8.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Purple80),
+                    shape = RoundedCornerShape(8.dp)
                 ) {
-                    Button(
-                        onClick = {
-                            coroutineScope.launch {
-                                animatedOffsetX.animateTo(
-                                    -300f,
-                                    animationSpec = TweenSpec(durationMillis = 200)
-                                ) // target value is -300 because its swiping to left
-                                animatedOffsetX.animateTo(
-                                    0f,
-                                    animationSpec = TweenSpec(durationMillis = 200)
-                                )
-                                if (currentIndex + 1 < images.size && currentIndex != 0)
-                                    currentIndex = (currentIndex + 1)
-                                else
-                                    // Afficher un message pour dire qu'il n'y a plus d'offres
-                                    Toast.makeText(
-                                        context,
-                                        "Il n'y a plus d'offres disponibles",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                            }
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(50.dp)
-                            .padding(end = 8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Purple80),
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-                        Text(text = "Dislike", color = Color.White)
-                    }
-
-                    Button(
-                        onClick = {
-                            coroutineScope.launch {
-                                animatedOffsetX.animateTo(
-                                    300f,
-                                    animationSpec = TweenSpec(durationMillis = 200)
-                                ) // tweenspeec is custom animation, targetvalue is 300f because swiping to the right
-                                animatedOffsetX.animateTo(
-                                    0f,
-                                    animationSpec = TweenSpec(durationMillis = 200)
-                                )
-                                if (currentIndex + 1 < images.size && currentIndex != 0)
-                                    currentIndex = (currentIndex + 1)
-                                else
-                                // Afficher un message pour dire qu'il n'y a plus d'offres
-                                    Toast.makeText(
-                                        context,
-                                        "Il n'y a plus d'offres disponibles",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                            }
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(50.dp)
-                            .padding(start = 8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Purple80),
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-                        Text(text = "Like", color = Color.White)
-                    }
+                    Text(text = "Dislike", color = Color.White)
                 }
 
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            animatedOffsetX.animateTo(
+                                300f,
+                                animationSpec = TweenSpec(durationMillis = 200)
+                            ) // tweenspeec is custom animation, targetvalue is 300f because swiping to the right
+                            animatedOffsetX.animateTo(
+                                0f,
+                                animationSpec = TweenSpec(durationMillis = 200)
+                            )
+                            if (currentIndex + 1 < imageUrls.size) {
+                                currentIndex += 1
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "No more offers available",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(50.dp)
+                        .padding(start = 8.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Purple80),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(text = "Like", color = Color.White)
+                }
             }
         }
     }
