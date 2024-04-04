@@ -52,12 +52,27 @@ class HomeFragment : Fragment() {
                 val field = if (role.equals("Recruiter", ignoreCase = true)) "cv" else "job_offer"
 
                 firestore.collection("users").whereEqualTo("role", targetRole).get().addOnSuccessListener { querySnapshot ->
-                    val urls = querySnapshot.documents.mapNotNull { it.getString(field) }.toList()
+                    val userId = currentUser.uid
+                    val likedMap = document.get("liked") as? HashMap<String, Boolean> ?: hashMapOf()
+                    val likedImages = likedMap.filterValues { it == true }.keys // Get the IDs of liked images
+
+                    val urls = querySnapshot.documents.mapNotNull { document ->
+                        val imageUrl = document.getString(field)
+                        val imageId = document.id
+
+                        // Check if the image has already been liked or disliked
+                        if (!likedImages.contains(imageId)) {
+                            imageUrl
+                        } else {
+                            null // Exclude the image URL if it has been liked or disliked
+                        }
+                    }
+
                     if (urls.isNotEmpty()) {
                         callback(urls)
                     } else {
                         // Handling case where no documents were found for the role
-                        Toast.makeText(context, "No documents found for role $targetRole", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "No more documents found for $role", Toast.LENGTH_SHORT).show()
                     }
                 }.addOnFailureListener { e ->
                     // Handling case where fetching documents fails
