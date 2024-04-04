@@ -319,18 +319,6 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                             animatedOffsetX.animateTo(0f)
                         }
                         if (abs(offsetX) > 200) {
-                            if (offsetX > 200) {
-                                // User swiped right (like)
-                                if (imageUrl != null) {
-                                    saveUserLiked(imageUrl = imageUrl, liked = true)
-                                }
-                            } else if (offsetX < -200) {
-                                // User swiped left (dislike)
-                                if (imageUrl != null) {
-                                    saveUserLiked(imageUrl = imageUrl, liked = false)
-                                }
-                            }
-
                             if (currentIndex + 1 <= imageUrls.size) {
                                 currentIndex += 1
                             } else {
@@ -352,6 +340,13 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                 },
             contentAlignment = Alignment.Center // Aligning content in the center
         ) {
+            if (imageUrl != null && offsetX < -200) {
+                saveUserLiked(imageUrl = imageUrl, liked = false)
+            }
+            else if (imageUrl != null && offsetX > 200) {
+                saveUserLiked(imageUrl = imageUrl, liked = true)
+            }
+
             if (currentIndex < imageUrls.size) {
                 Image(
                     painter = rememberAsyncImagePainter(model = imageUrl),
@@ -359,6 +354,8 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.FillBounds // Stretches the image to fill the specified width and height
                 )
+
+
             } else {
                 Text(
                     "No more offers available",
