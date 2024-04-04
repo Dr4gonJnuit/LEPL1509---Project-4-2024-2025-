@@ -186,7 +186,7 @@ fun loadUserData(view: View, context: Context) {
             val email = user.getString("email")
 
             var username = user.getString("username")
-            if(username == "none") {
+            if (username == "none") {
                 username = email?.substring(0, email.indexOf('@'))
             }
 
@@ -210,7 +210,7 @@ fun loadUserData(view: View, context: Context) {
                     .placeholder(R.drawable.default_pdp) // Placeholder image while loading
                     .error(R.drawable.default_pdp) // Image to show if loading fails
                     .into(profileImg)
-                }
+            }
             // Set user data to views
             profileUsername.text = username
             profileEmail.text = email
@@ -218,7 +218,7 @@ fun loadUserData(view: View, context: Context) {
             profileAboutMe.text = aboutMe
 
 
-            } else {
+        } else {
             // Document does not exist
         }
     }.addOnFailureListener { e ->
@@ -231,11 +231,26 @@ fun loadUserData(view: View, context: Context) {
 }
 
 // Update liked users dynamically
-fun updateUserLikedStatus(arrayOfLiked: HashMap<String, Boolean>, userId: String, liked: Boolean) {
-    arrayOfLiked[userId] = liked
+fun saveMatch(context: Context, firestore: FirebaseFirestore, recruiter: String, jobSeeker: String) {
+    val combinedId = recruiter + jobSeeker
+    val match = hashMapOf(
+        "Recruiter" to recruiter,
+        "JobSeeker" to jobSeeker,
+        "matchId" to combinedId
+    )
+
+    firestore.collection("matchmaking")
+        .document(combinedId)
+        .set(match)
+        .addOnSuccessListener { 
+            Toast.makeText(context, "It's a Match!", Toast.LENGTH_SHORT).show()
+        }
+        .addOnFailureListener {
+            Toast.makeText(context, "Fail to Match", Toast.LENGTH_SHORT).show()
+        }
 }
 
-fun saveUserLiked(imageUrl: String, liked: Boolean) {
+fun saveUserLiked(context: Context, imageUrl: String, liked: Boolean) {
     // Initialize Firebase instances
     val auth = FirebaseAuth.getInstance()
     val firestore = FirebaseFirestore.getInstance()
@@ -247,6 +262,7 @@ fun saveUserLiked(imageUrl: String, liked: Boolean) {
 
     // Get user profiles liked
     userRef.get().addOnSuccessListener { userData ->
+        val userRole = userData.get("role")
         val likedMap = userData.get("liked") as? HashMap<String, Boolean> ?: hashMapOf()
 
         // Get the image reference from the Firebase Storage URL
@@ -255,12 +271,38 @@ fun saveUserLiked(imageUrl: String, liked: Boolean) {
         // Retrieve metadata for the image
         imageRef.metadata.addOnSuccessListener { metadata ->
             // Extract the UID associated with the image
-            val userLikedID = metadata.getCustomMetadata("userID")
+            val userLikedId = metadata.getCustomMetadata("userID")
 
             // Check if the UID exists and if the user liked the image
-            if (userLikedID != null) {
+            if (userLikedId != null) {
                 // Add the UID with associated liked status to the liked HashMap
-                likedMap[userLikedID] = liked
+                likedMap[userLikedId] = liked
+
+                // Matchmaking
+                if (liked) { // Not usefully to check if there a match if the user didn't like
+                    val userLikedRef = firestore.collection("users").document(userLikedId)
+                    userLikedRef.get().addOnSuccessListener { userLikedData ->
+                        val userLikedLikedMap =
+                            userLikedData.get("liked") as? HashMap<String, Boolean> ?: hashMapOf()
+                        if (userLikedLikedMap[userId] == true) {
+                            if (userRole == "Recruiter") {
+                                saveMatch(
+                                    context = context,
+                                    firestore = firestore,
+                                    recruiter = userId,
+                                    jobSeeker = userLikedId
+                                )
+                            } else {
+                                saveMatch(
+                                    context = context,
+                                    firestore = firestore,
+                                    recruiter = userLikedId,
+                                    jobSeeker = userId
+                                )
+                            }
+                        }
+                    }
+                }
 
                 // Update the user's data in Firestore
                 userRef.update(
@@ -319,11 +361,13 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                             if (currentIndex + 1 <= imageUrls.size) {
                                 currentIndex += 1
                             } else {
-                                Toast.makeText(
-                                    context,
-                                    "No more offers available",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                Toast
+                                    .makeText(
+                                        context,
+                                        "No more offers available",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                    .show()
                             }
                         }
                         offsetX = 0f
@@ -338,10 +382,9 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
             contentAlignment = Alignment.Center // Aligning content in the center
         ) {
             if (imageUrl != null && offsetX < -200) {
-                saveUserLiked(imageUrl = imageUrl, liked = false)
-            }
-            else if (imageUrl != null && offsetX > 200) {
-                saveUserLiked(imageUrl = imageUrl, liked = true)
+                saveUserLiked(context = context, imageUrl = imageUrl, liked = false)
+            } else if (imageUrl != null && offsetX > 200) {
+                saveUserLiked(context = context, imageUrl = imageUrl, liked = true)
             }
 
             if (currentIndex < imageUrls.size) {
@@ -387,7 +430,7 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                             )
 
                             if (imageUrl != null) {
-                                saveUserLiked(imageUrl = imageUrl, liked = false)
+                                saveUserLiked(context = context, imageUrl = imageUrl, liked = false)
                             }
 
                             if (currentIndex + 1 <= imageUrls.size) {
@@ -424,7 +467,7 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                             )
 
                             if (imageUrl != null) {
-                                saveUserLiked(imageUrl = imageUrl, liked = true)
+                                saveUserLiked(context = context, imageUrl = imageUrl, liked = true)
                             }
 
                             if (currentIndex + 1 <= imageUrls.size) {

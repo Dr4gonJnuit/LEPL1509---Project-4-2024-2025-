@@ -28,4 +28,7 @@
     <string name="email">Contact@JobSwype.be</string>
     <string name="img_content_desc">Photo de profil</string>
     <string name="phonenumber_maj">0412345678</string>
+    <string name="send_message">Send message</string>
+    <string name="tap_your_message">Tap your message</string>
+    <string name="write_here">Write here</string>
 </resources>
