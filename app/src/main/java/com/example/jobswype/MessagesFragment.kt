@@ -24,7 +24,7 @@ class MessagesFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_messages, container, false)
-
+        /*
         val buttonSendMessage = view.findViewById<Button>(R.id.send_message_button)
         val messageEditText = view.findViewById<TextView>(R.id.write_message)
 
@@ -34,7 +34,7 @@ class MessagesFragment : Fragment() {
                 sendMessage(requireContext(), messageText)
             }
         }
-
+        */
         return view
     }
 
