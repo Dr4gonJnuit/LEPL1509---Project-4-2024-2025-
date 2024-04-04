@@ -123,6 +123,7 @@ class SettingsFragment : Fragment() {
         userRef.get().addOnSuccessListener { document ->
             val cv = document.getString("cv")
             val job_offer = document.getString("job_offer")
+            val role = document.getString("role")
             if (cv != null) {
                 Glide.with(requireContext())
                     .load(cv)
@@ -132,6 +133,13 @@ class SettingsFragment : Fragment() {
                 Glide.with(requireContext())
                     .load(job_offer)
                     .into(previewFile)
+            } else{
+                if (role == "JobSeeker") {
+                    // if the user has not uploaded a CV, load the default drawable image
+                    previewFile.setImageResource(R.drawable.cv9)
+                } else {
+                    previewFile.setImageResource(R.drawable.default_job_offer)
+                }
             }
         }
     }
