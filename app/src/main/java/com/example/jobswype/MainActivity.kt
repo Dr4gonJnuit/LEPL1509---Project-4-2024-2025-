@@ -1,9 +1,7 @@
 package com.example.jobswype
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -53,8 +51,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.example.jobswype.session.LoginSession
-import com.example.jobswype.ui.theme.Blue_light
-import com.example.jobswype.ui.theme.Purple80
+import com.example.jobswype.ui.theme.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.Firebase
@@ -408,7 +405,7 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                         .weight(1f)
                         .height(50.dp)
                         .padding(end = 8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Purple80),
+                    colors = ButtonDefaults.buttonColors(containerColor = Blue_dark),
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(text = "Dislike", color = Color.White)
@@ -445,7 +442,7 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                         .weight(1f)
                         .height(50.dp)
                         .padding(start = 8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Purple80),
+                    colors = ButtonDefaults.buttonColors(containerColor = Blue_dark),
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(text = "Like", color = Color.White)
