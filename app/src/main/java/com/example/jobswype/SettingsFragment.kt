@@ -10,12 +10,17 @@ import android.widget.Button
 import android.content.Intent
 import android.provider.MediaStore
 import android.app.Activity
+import android.content.Context
 import android.net.Uri
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -50,7 +55,6 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_settings, container, false)
-
         // Initialize Firebase instances
         storage = FirebaseStorage.getInstance()
         storageRef = storage?.reference
@@ -104,6 +108,33 @@ class SettingsFragment : Fragment() {
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        firestore?.collection("users")?.document(auth?.currentUser?.uid!!)
+            ?.let { loadPreview(view, it, savedInstanceState) }
+    }
+    private fun loadPreview(view: View, userRef: DocumentReference, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val previewFile = view.findViewById<ImageView>(R.id.previewFile)
+        auth = FirebaseAuth.getInstance()
+        storage = FirebaseStorage.getInstance()
+
+        // Récupérer l'ID de l'utilisateur actuel
+        userRef.get().addOnSuccessListener { document ->
+            val cv = document.getString("cv")
+            val job_offer = document.getString("job_offer")
+            if (cv != null) {
+                Glide.with(requireContext())
+                    .load(cv)
+                    .into(previewFile)
+
+            } else if (job_offer != null) {
+                Glide.with(requireContext())
+                    .load(job_offer)
+                    .into(previewFile)
+            }
+        }
+    }
     private fun uploadImageToFirebase(imageUri: Uri?, requestCode: Int) {
         val user = auth?.currentUser
 
@@ -166,6 +197,7 @@ class SettingsFragment : Fragment() {
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
+                    loadPreview(requireView(), userRef, null) // Mettre à jour l'aperçu après le téléchargement
                 } else {
                     userRef.update("job_offer", imageUrl)
                         .addOnSuccessListener {
@@ -182,6 +214,7 @@ class SettingsFragment : Fragment() {
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
+                    loadPreview(requireView(), userRef, null) // Mettre à jour l'aperçu après le téléchargement
                 }
             }
                 // Handle failure to get user role
