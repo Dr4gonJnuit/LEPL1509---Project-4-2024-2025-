@@ -51,7 +51,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.example.jobswype.session.LoginSession
-import com.example.jobswype.ui.theme.*
+import com.example.jobswype.ui.theme.Blue_dark
+import com.example.jobswype.ui.theme.Blue_light
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.Firebase
@@ -231,7 +232,12 @@ fun loadUserData(view: View, context: Context) {
 }
 
 // Update liked users dynamically
-fun saveMatch(context: Context, firestore: FirebaseFirestore, recruiter: String, jobSeeker: String) {
+fun saveMatch(
+    context: Context,
+    firestore: FirebaseFirestore,
+    recruiter: String,
+    jobSeeker: String
+) {
     val combinedId = recruiter + jobSeeker
     val match = hashMapOf(
         "Recruiter" to recruiter,
@@ -242,7 +248,7 @@ fun saveMatch(context: Context, firestore: FirebaseFirestore, recruiter: String,
     firestore.collection("matchmaking")
         .document(combinedId)
         .set(match)
-        .addOnSuccessListener { 
+        .addOnSuccessListener {
             Toast.makeText(context, "It's a Match!", Toast.LENGTH_SHORT).show()
         }
         .addOnFailureListener {

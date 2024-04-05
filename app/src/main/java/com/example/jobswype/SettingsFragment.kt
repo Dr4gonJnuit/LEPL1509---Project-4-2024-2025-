@@ -1,31 +1,27 @@
 package com.example.jobswype
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import android.widget.Button
-import android.content.Intent
-import android.provider.MediaStore
-import android.app.Activity
-import android.content.Context
-import android.net.Uri
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.storageMetadata
-import java.util.*
+import java.util.UUID
 
 private const val UPLOAD_PP_REQUEST_CODE = 1001
 private const val UPLOAD_FILE_REQUEST_CODE = 1002
@@ -113,6 +109,7 @@ class SettingsFragment : Fragment() {
         firestore?.collection("users")?.document(auth?.currentUser?.uid!!)
             ?.let { loadPreview(view, it, savedInstanceState) }
     }
+
     private fun loadPreview(view: View, userRef: DocumentReference, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val previewFile = view.findViewById<ImageView>(R.id.previewFile)
@@ -133,7 +130,7 @@ class SettingsFragment : Fragment() {
                 Glide.with(requireContext())
                     .load(job_offer)
                     .into(previewFile)
-            } else{
+            } else {
                 if (role == "JobSeeker") {
                     // if the user has not uploaded a CV, load the default drawable image
                     previewFile.setImageResource(R.drawable.cv9)
@@ -143,6 +140,7 @@ class SettingsFragment : Fragment() {
             }
         }
     }
+
     private fun uploadImageToFirebase(imageUri: Uri?, requestCode: Int) {
         val user = auth?.currentUser
 
@@ -205,7 +203,11 @@ class SettingsFragment : Fragment() {
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-                    loadPreview(requireView(), userRef, null) // Mettre à jour l'aperçu après le téléchargement
+                    loadPreview(
+                        requireView(),
+                        userRef,
+                        null
+                    ) // Mettre à jour l'aperçu après le téléchargement
                 } else {
                     userRef.update("job_offer", imageUrl)
                         .addOnSuccessListener {
@@ -222,7 +224,11 @@ class SettingsFragment : Fragment() {
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-                    loadPreview(requireView(), userRef, null) // Mettre à jour l'aperçu après le téléchargement
+                    loadPreview(
+                        requireView(),
+                        userRef,
+                        null
+                    ) // Mettre à jour l'aperçu après le téléchargement
                 }
             }
                 // Handle failure to get user role
