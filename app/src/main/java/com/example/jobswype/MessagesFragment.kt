@@ -7,7 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -16,7 +18,7 @@ class MessagesFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
 
-    private lateinit var recipientUserId: String
+    private lateinit var recipientUserId: String // TODO : should take the userID of the user to whom we want to send a message.
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,7 +26,8 @@ class MessagesFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_messages, container, false)
-        /*
+
+        // Initialize views
         val buttonSendMessage = view.findViewById<Button>(R.id.send_message_button)
         val messageEditText = view.findViewById<TextView>(R.id.write_message)
 
@@ -34,7 +37,7 @@ class MessagesFragment : Fragment() {
                 sendMessage(requireContext(), messageText)
             }
         }
-        */
+
         return view
     }
 
@@ -60,7 +63,11 @@ class MessagesFragment : Fragment() {
             }
             .addOnFailureListener { exception ->
                 // Handle errors
-                // Add error handling logic if needed
+                Toast.makeText(
+                    requireContext(),
+                    "Fail to send the message : ${exception.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
     }
 }

@@ -2,7 +2,9 @@ package com.example.jobswype
 
 import android.content.Context
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
+import android.view.SubMenu
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -51,7 +53,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.example.jobswype.session.LoginSession
-import com.example.jobswype.ui.theme.*
+import com.example.jobswype.ui.theme.Blue_dark
+import com.example.jobswype.ui.theme.Blue_light
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.Firebase
@@ -94,6 +97,10 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.fragment_container, HomeFragment()).commit()
             navigationView.setCheckedItem(R.id.bottom_home)
         }
+
+        // Add Contacts to Navigation Drawer if the user have contacts
+        addContactsMenu(context = applicationContext, navigationView)
+
 
         // Bottom Navigation
         bottomNavigationView = findViewById(R.id.bottom_navigation)
@@ -231,7 +238,12 @@ fun loadUserData(view: View, context: Context) {
 }
 
 // Update liked users dynamically
-fun saveMatch(context: Context, firestore: FirebaseFirestore, recruiter: String, jobSeeker: String) {
+fun saveMatch(
+    context: Context,
+    firestore: FirebaseFirestore,
+    recruiter: String,
+    jobSeeker: String
+) {
     val combinedId = recruiter + jobSeeker
     val match = hashMapOf(
         "Recruiter" to recruiter,
@@ -242,7 +254,7 @@ fun saveMatch(context: Context, firestore: FirebaseFirestore, recruiter: String,
     firestore.collection("matchmaking")
         .document(combinedId)
         .set(match)
-        .addOnSuccessListener { 
+        .addOnSuccessListener {
             Toast.makeText(context, "It's a Match!", Toast.LENGTH_SHORT).show()
         }
         .addOnFailureListener {
@@ -283,7 +295,8 @@ fun saveUserLiked(context: Context, imageUrl: String, liked: Boolean) {
                     val userLikedRef = firestore.collection("users").document(userLikedId)
                     userLikedRef.get().addOnSuccessListener { userLikedData ->
                         val userLikedLikedMap =
-                            userLikedData.get("liked") as? HashMap<String, Boolean> ?: hashMapOf()
+                            userLikedData.get("liked") as? HashMap<String, Boolean>
+                                ?: hashMapOf()
                         if (userLikedLikedMap[userId] == true) {
                             if (userRole == "Recruiter") {
                                 saveMatch(
@@ -323,6 +336,65 @@ fun saveUserLiked(context: Context, imageUrl: String, liked: Boolean) {
     }.addOnFailureListener { e ->
         println("Error getting user data: $e")
     }
+}
+
+fun addContactsMenu(context: Context, navigationView: NavigationView) {
+    val menu: Menu = navigationView.menu
+    val subMenu: SubMenu = menu.addSubMenu("Contacts")
+
+    val auth = FirebaseAuth.getInstance()
+    val firestore = FirebaseFirestore.getInstance()
+
+    val currentUser = auth.currentUser
+    val userId = currentUser?.uid
+    val userRef = firestore.collection("users").document(userId!!)
+
+    userRef.get().addOnSuccessListener { user ->
+        if (user != null) {
+            // Get user data
+            val userRole = user.getString("Role")
+            val otherRole = if (userRole == "JobSeeker") "Recruiter" else "JobSeeker"
+
+            userRole?.let {
+                firestore.collection("matchmaking").whereEqualTo(it, userId).get()
+                    .addOnSuccessListener { matchs ->
+                        var nbr_of_none: Int = 0
+                        for (match in matchs) {
+                            val otherID = match.getString(otherRole)
+
+                            val otherRef = firestore.collection("users").document(otherID!!)
+                            otherRef.get().addOnSuccessListener { otherUser ->
+                                if (otherUser != null) {
+                                    val otherName = otherUser.getString("username")
+
+                                    if (otherName == "none") {
+                                        nbr_of_none += 1
+                                        subMenu.add("Contact without name $nbr_of_none")
+                                    } else {
+                                        subMenu.add(otherName)
+                                    }
+                                    // Invalidate the menu after adding all items
+                                    navigationView.invalidate()
+                                }
+                            }
+                                .addOnFailureListener { exception ->
+                                    Toast.makeText(
+                                        context,
+                                        "No contact find :$exception",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        Toast.makeText(context, "No match find :$exception", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+            }
+        }
+    }
+
+    //navigationView.invalidate()
 }
 
 @Composable
@@ -430,7 +502,11 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                             )
 
                             if (imageUrl != null) {
-                                saveUserLiked(context = context, imageUrl = imageUrl, liked = false)
+                                saveUserLiked(
+                                    context = context,
+                                    imageUrl = imageUrl,
+                                    liked = false
+                                )
                             }
 
                             if (currentIndex + 1 <= imageUrls.size) {
@@ -467,7 +543,11 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                             )
 
                             if (imageUrl != null) {
-                                saveUserLiked(context = context, imageUrl = imageUrl, liked = true)
+                                saveUserLiked(
+                                    context = context,
+                                    imageUrl = imageUrl,
+                                    liked = true
+                                )
                             }
 
                             if (currentIndex + 1 <= imageUrls.size) {

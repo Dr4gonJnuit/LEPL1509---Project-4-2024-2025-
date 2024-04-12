@@ -1,102 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/profilebkg"
-    android:layout_marginBottom="55dp"
-    tools:context=".MessagesFragment">
-<!--
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <!-- Add RecyclerView to display contacts -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_contacts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/blue_border"
-        android:padding="15dp"
-        android:layout_margin="15dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/name_user"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textColor="@color/blue"
-            android:textSize="32sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/editUsername"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/blue_border"
-            android:drawablePadding="8dp"
-            android:padding="8dp"
-            android:textColor="@color/black" />
+        android:layout_marginBottom="55dp"
+        android:background="@drawable/profilebkg"
+        tools:context=".MessagesFragment">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="15dp"
             android:background="@drawable/blue_border"
             android:orientation="vertical"
-            android:layout_marginTop="20dp"
             android:padding="15dp">
 
             <TextView
-                android:id="@+id/write_message_ex"
-                android:layout_width="wrap_content"
+                android:id="@+id/name_user"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/tap_your_message"
-                android:layout_marginBottom="10dp"
-                android:textColor="@color/blue_dark"
-                android:textSize="20sp"
+                android:textAlignment="center"
+                android:textColor="@color/blue"
+                android:textSize="32sp"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/write_message"
+            <TextView
+                android:id="@+id/editUsername"
                 android:layout_width="match_parent"
-                android:layout_height="38dp"
-                android:background="@drawable/white_border"
-                android:hint="@string/write_here"
-                android:inputType="textMultiLine"
-                android:textAlignment="gravity"
-                android:textColor="@color/black"
-                android:textSize="17sp" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/blue_border"
+                android:drawablePadding="8dp"
+                android:padding="8dp"
+                android:textColor="@color/black" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/blue_border"
+                android:orientation="vertical"
+                android:padding="15dp">
+
+                <TextView
+                    android:id="@+id/write_message_ex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/tap_your_message"
+                    android:textColor="@color/blue_dark"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/write_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/white_border"
+                    android:hint="@string/write_here"
+                    android:inputType="textMultiLine"
+                    android:autofillHints="auto"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    tools:ignore="VisualLintTextFieldSize" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/send_message_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/blue_border"
+                android:backgroundTint="@color/blue_dark"
+                android:text="@string/send_message"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/send_message_button"
-            android:layout_width="126dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/blue_border"
-            android:backgroundTint="@color/blue_dark"
-            android:text="@string/send_message"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+    </ScrollView>
 
-</ScrollView>
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/blue_light"
-    tools:context=".MessagesFragment">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="Messages Fragment"
-        android:textColor="@color/blue"
-        android:textSize="30sp" />
-
-</FrameLayout>
--->
-</ScrollView>
+</RelativeLayout>
