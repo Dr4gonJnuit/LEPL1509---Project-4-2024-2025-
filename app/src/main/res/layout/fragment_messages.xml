@@ -5,10 +5,12 @@
     android:layout_height="match_parent">
 
     <!-- Add RecyclerView to display contacts -->
+    <!--
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_contacts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+    -->
 
     <ScrollView
         android:layout_width="match_parent"
@@ -35,7 +37,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/editUsername"
+                android:id="@+id/messages_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"

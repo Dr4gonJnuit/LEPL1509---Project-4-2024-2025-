@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Add Contacts to Navigation Drawer if the user have contacts
-        addContactsMenu(context = applicationContext, navigationView)
+        //addContactsMenu(context = applicationContext, navigationView)
 
 
         // Bottom Navigation
@@ -168,6 +168,10 @@ class MainActivity : AppCompatActivity() {
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
             .commit()
+    }
+
+    fun getNavigationView(): NavigationView {
+        return findViewById(R.id.nav_view)
     }
 }
 
