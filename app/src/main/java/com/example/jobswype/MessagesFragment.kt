@@ -128,7 +128,7 @@ class MessagesFragment : Fragment() {
                                     menuItem.setOnMenuItemClickListener { clickedMenuItem ->
                                         // Retrieve the user ID from the map
                                         val clickedUserId = userIDandInt[clickedMenuItem.itemId]
-                                        loadUserAndMessages(userID, clickedUserId!!, view)
+                                        loadUserAndMessages(context, userID, clickedUserId!!, view)
                                         // Display a Toast with the user ID
                                         //Toast.makeText(context, "User ID: $clickedUserId", Toast.LENGTH_SHORT).show()
                                         true // Indicate that the click event has been handled
@@ -142,7 +142,7 @@ class MessagesFragment : Fragment() {
             }
     }
 
-    private fun loadUserAndMessages(userID: String, otherID: String, view: View) {
+    private fun loadUserAndMessages(context: Context, userID: String, otherID: String, view: View) {
         firestore.collection("users").document(otherID)
             .get()
             .addOnSuccessListener { user ->
@@ -154,7 +154,7 @@ class MessagesFragment : Fragment() {
                 firestore.collection("messages")
                     .whereEqualTo("sender", userID)
                     .whereEqualTo("recipient", otherID)
-                    .orderBy("timestamp", Query.Direction.DESCENDING)
+                    //.orderBy("timestamp", Query.Direction.DESCENDING)
                     .get()
                     .addOnSuccessListener { messages ->
                         val messageView = view.findViewById<TextView>(R.id.messages_view)
@@ -165,6 +165,20 @@ class MessagesFragment : Fragment() {
                             messageView.text = "${messageView.text}\n$messageText\n"
                         }
                     }
+                    .addOnFailureListener { exception ->
+                        Toast.makeText(
+                            context,
+                            "Fail to get your conversation : $exception",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(
+                    context,
+                    "Fail to get the user name: $exception",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
     }
 
