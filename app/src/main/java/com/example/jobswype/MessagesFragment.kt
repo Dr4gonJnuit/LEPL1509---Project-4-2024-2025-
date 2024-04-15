@@ -1,7 +1,9 @@
 package com.example.jobswype
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
@@ -24,7 +26,8 @@ class MessagesFragment : Fragment() {
     // Stock the user ID with it's number
     private val userIDandInt = HashMap<Int, String>()
 
-    private lateinit var recipientUserId: String // TODO : should take the userID of the user to whom we want to send a message.
+    private lateinit var recipientUserId: String
+    private lateinit var matchmakingID: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,7 +66,8 @@ class MessagesFragment : Fragment() {
             "sender" to senderUserId,
             "recipient" to recipientUserId,
             "text" to messageText,
-            "timestamp" to System.currentTimeMillis()
+            "timestamp" to System.currentTimeMillis(),
+            "matchmakingID" to matchmakingID
         )
 
         // Add the message to Firestore
@@ -107,7 +111,7 @@ class MessagesFragment : Fragment() {
                                     "JobSeeker"
                                 )
 
-                            val matchMakingID = match.id
+                            val matchID = match.id
 
                             firestore.collection("users").document(otherID!!)
                                 .get()
@@ -128,7 +132,7 @@ class MessagesFragment : Fragment() {
                                     menuItem.setOnMenuItemClickListener { clickedMenuItem ->
                                         // Retrieve the user ID from the map
                                         val clickedUserId = userIDandInt[clickedMenuItem.itemId]
-                                        loadUserAndMessages(context, userID, clickedUserId!!, view)
+                                        loadUserAndMessages(context, matchID, userID, clickedUserId!!, view)
                                         // Display a Toast with the user ID
                                         //Toast.makeText(context, "User ID: $clickedUserId", Toast.LENGTH_SHORT).show()
                                         true // Indicate that the click event has been handled
@@ -142,19 +146,20 @@ class MessagesFragment : Fragment() {
             }
     }
 
-    private fun loadUserAndMessages(context: Context, userID: String, otherID: String, view: View) {
+    private fun loadUserAndMessages(context: Context, matchID: String, userID: String, otherID: String, view: View) {
         firestore.collection("users").document(otherID)
             .get()
             .addOnSuccessListener { user ->
                 recipientUserId = otherID
+                matchmakingID = matchID
                 val nameContact = view.findViewById<TextView>(R.id.name_user)
                 nameContact.text = user.getString("username")
 
                 // Load existing messages
                 firestore.collection("messages")
-                    .whereEqualTo("sender", userID)
-                    .whereEqualTo("recipient", otherID)
-                    //.orderBy("timestamp", Query.Direction.DESCENDING)
+                    .whereEqualTo("matchmakingID", matchmakingID)
+                    //.whereEqualTo("recipient", otherID)
+                    .orderBy("timestamp")
                     .get()
                     .addOnSuccessListener { messages ->
                         val messageView = view.findViewById<TextView>(R.id.messages_view)
@@ -166,6 +171,7 @@ class MessagesFragment : Fragment() {
                         }
                     }
                     .addOnFailureListener { exception ->
+                        Log.w(TAG, "Error getting messages", exception)
                         Toast.makeText(
                             context,
                             "Fail to get your conversation : $exception",
