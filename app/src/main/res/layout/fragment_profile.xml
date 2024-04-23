@@ -15,20 +15,20 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="211dp"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/blue_profile_border"
                 android:orientation="vertical"
-                android:padding="1dp"
-                android:layout_marginBottom="20dp">
+                android:padding="1dp">
 
                 <ImageView
                     android:id="@+id/profileImg"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
-                    android:layout_marginTop="10dp"
-                    android:padding="3dp"
                     android:layout_gravity="center_horizontal"
-                    android:contentDescription="@string/img_content_desc" />
+                    android:layout_marginTop="10dp"
+                    android:contentDescription="@string/img_content_desc"
+                    android:padding="3dp" />
 
                 <TextView
                     android:id="@+id/profileUsername"
@@ -74,32 +74,6 @@
                     android:padding="15dp"
                     android:textColor="@color/black" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/profile_border"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="20dp"
-                    android:padding="15dp">
-
-                    <TextView
-                        android:id="@+id/aboutme"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:text="About Me"
-                        android:textColor="@color/blue_dark"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/profileAboutMe"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="gravity"
-                        android:textSize="18sp"
-                        android:textColor="@color/black" />
-                </LinearLayout>
 
             </LinearLayout>
 

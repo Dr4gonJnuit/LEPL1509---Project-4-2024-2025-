@@ -111,36 +111,6 @@
             android:textStyle="bold"
             android:textColor="@color/blue_dark"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/blue_border"
-            android:orientation="vertical"
-            android:layout_marginTop="20dp"
-            android:padding="15dp">
-
-            <TextView
-                android:id="@+id/editAboutMeTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="About Me"
-                android:layout_marginBottom="10dp"
-                android:textColor="@color/blue_dark"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/editAboutMe"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/white_border"
-                android:textAlignment="gravity"
-                android:hint="Describe yourself here..."
-                android:inputType="textMultiLine"
-                android:textSize="17sp"
-                android:textColor="@color/black" />
-        </LinearLayout>
-
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

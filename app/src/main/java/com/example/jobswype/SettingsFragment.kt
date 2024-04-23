@@ -74,7 +74,6 @@ class SettingsFragment : Fragment() {
         val editEmail = view.findViewById<EditText>(R.id.editEmail)
         val editPhone = view.findViewById<EditText>(R.id.editPhone)
         val editPassword = view.findViewById<EditText>(R.id.editPassword)
-        val editAboutMe = view.findViewById<EditText>(R.id.editAboutMe)
         val saveButton = view.findViewById<Button>(R.id.saveButton)
 
         saveButton.setOnClickListener {
@@ -82,7 +81,6 @@ class SettingsFragment : Fragment() {
             val email = editEmail.text.toString().trim()
             val phone = editPhone.text.toString().trim()
             val password = editPassword.text.toString().trim()
-            val aboutMe = editAboutMe.text.toString().trim()
 
             if (username.isNotEmpty()) {
                 editProfileInfo("username", username)
@@ -95,9 +93,6 @@ class SettingsFragment : Fragment() {
             }
             if (password.isNotEmpty()) {
                 editProfileInfo("password", password)
-            }
-            if (aboutMe.isNotEmpty()) {
-                editProfileInfo("aboutme", aboutMe)
             }
         }
 
@@ -133,7 +128,7 @@ class SettingsFragment : Fragment() {
             } else {
                 if (role == "JobSeeker") {
                     // if the user has not uploaded a CV, load the default drawable image
-                    previewFile.setImageResource(R.drawable.cv9)
+                    previewFile.setImageResource(R.drawable.default_cv)
                 } else {
                     previewFile.setImageResource(R.drawable.default_job_offer)
                 }
@@ -152,6 +147,10 @@ class SettingsFragment : Fragment() {
             }
 
             val uploadTask = imageRef?.putFile(imageUri, metadata)
+            uploadTask?.addOnSuccessListener {
+                println("SuccessListener added successfully")
+            }
+
             uploadTask?.addOnSuccessListener { _ ->
                 imageRef.downloadUrl.addOnSuccessListener { uri ->
                     val downloadUrl = uri.toString()

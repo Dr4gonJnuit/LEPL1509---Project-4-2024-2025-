@@ -1,13 +1,14 @@
 {
   "project_info": {
     "project_number": "1087599333574",
+    "firebase_url": "https://jobswype-927fc-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "jobswype-927fc",
     "storage_bucket": "jobswype-927fc.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1087599333574:android:a9c4cf8d02ea74ccba87c7",
+        "mobilesdk_app_id": "1:1087599333574:android:ff6154b4ebe46700ba87c7",
         "android_client_info": {
           "package_name": "com.example.jobswype"
         }

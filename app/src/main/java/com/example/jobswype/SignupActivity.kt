@@ -1,12 +1,16 @@
 package com.example.jobswype
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.jobswype.databinding.ActivitySignupBinding
+import com.example.jobswype.model.UserModel
 import com.example.jobswype.session.LoginSession
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 
 class SignupActivity : AppCompatActivity() {
@@ -27,11 +31,13 @@ class SignupActivity : AppCompatActivity() {
 
         binding.signupButton.setOnClickListener {
             val email = binding.signupEmail.text.toString().trimEnd()
+            var username = "none"
             val password = binding.signupPassword.text.toString()
             val confirmPassword = binding.signupConfirm.text.toString()
 
             if (email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()) {
                 if (password == confirmPassword) {
+                    username = email.substring(0, email.indexOf('@')).toString()
                     firebaseAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
@@ -42,8 +48,7 @@ class SignupActivity : AppCompatActivity() {
                                     "email" to email,
                                     "password" to password,
                                     "phone" to "none",
-                                    "aboutme" to "none",
-                                    "username" to "none",
+                                    "username" to username,
                                     "profilePic" to "none",
                                     "role" to "none",
                                     "liked" to hashMapOf<String, Boolean>()

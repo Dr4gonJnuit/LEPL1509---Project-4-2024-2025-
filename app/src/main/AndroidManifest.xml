@@ -9,12 +9,13 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
+        android:enableOnBackInvokedCallback="true"
         android:icon="@drawable/jobswype_logo"
         android:label="@string/app_name"
         android:roundIcon="@drawable/jobswype_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-        tools:targetApi="31">
+        tools:targetApi="33">
         <activity
             android:name=".RolesChoice"
             android:exported="false" />

@@ -2,7 +2,9 @@ package com.example.jobswype
 
 import android.content.Context
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
+import android.view.SubMenu
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -51,12 +53,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.example.jobswype.session.LoginSession
-import com.example.jobswype.ui.theme.Blue_dark
-import com.example.jobswype.ui.theme.Blue_light
+import com.example.jobswype.ui.theme.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.storage
 import kotlinx.coroutines.launch
@@ -91,10 +93,13 @@ class MainActivity : AppCompatActivity() {
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, HomeFragment()).commit()
+            replaceFragment(HomeFragment())
             navigationView.setCheckedItem(R.id.bottom_home)
         }
+
+        // Add Contacts to Navigation Drawer if the user have contacts
+        //addContactsMenu(context = applicationContext, navigationView)
+
 
         // Bottom Navigation
         bottomNavigationView = findViewById(R.id.bottom_navigation)
@@ -125,8 +130,7 @@ class MainActivity : AppCompatActivity() {
     fun setNavigationItemSelectedListener(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_settings -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, SettingsFragment()).commit()
+                replaceFragment(SettingsFragment())
             }
 
             R.id.nav_logout -> {
@@ -163,6 +167,10 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
             .commit()
     }
+
+    fun getNavigationView(): NavigationView {
+        return findViewById(R.id.nav_view)
+    }
 }
 
 fun loadUserData(view: View, context: Context) {
@@ -171,7 +179,6 @@ fun loadUserData(view: View, context: Context) {
     val profileUsername = view.findViewById<TextView>(R.id.profileUsername)
     val profileEmail = view.findViewById<TextView>(R.id.profileEmail)
     val profilePhone = view.findViewById<TextView>(R.id.profilePhone)
-    val profileAboutMe = view.findViewById<TextView>(R.id.profileAboutMe)
 
     // Initialize Firebase instances
     val auth = FirebaseAuth.getInstance()
@@ -216,7 +223,6 @@ fun loadUserData(view: View, context: Context) {
             profileUsername.text = username
             profileEmail.text = email
             profilePhone.text = phone
-            profileAboutMe.text = aboutMe
 
 
         } else {
@@ -249,6 +255,7 @@ fun saveMatch(
         .document(combinedId)
         .set(match)
         .addOnSuccessListener {
+            FirebaseDatabase.getInstance().reference.child("matchmaking").child(combinedId).setValue(match)
             Toast.makeText(context, "It's a Match!", Toast.LENGTH_SHORT).show()
         }
         .addOnFailureListener {
@@ -289,7 +296,8 @@ fun saveUserLiked(context: Context, imageUrl: String, liked: Boolean) {
                     val userLikedRef = firestore.collection("users").document(userLikedId)
                     userLikedRef.get().addOnSuccessListener { userLikedData ->
                         val userLikedLikedMap =
-                            userLikedData.get("liked") as? HashMap<String, Boolean> ?: hashMapOf()
+                            userLikedData.get("liked") as? HashMap<String, Boolean>
+                                ?: hashMapOf()
                         if (userLikedLikedMap[userId] == true) {
                             if (userRole == "Recruiter") {
                                 saveMatch(
@@ -329,6 +337,65 @@ fun saveUserLiked(context: Context, imageUrl: String, liked: Boolean) {
     }.addOnFailureListener { e ->
         println("Error getting user data: $e")
     }
+}
+
+fun addContactsMenu(context: Context, navigationView: NavigationView) {
+    val menu: Menu = navigationView.menu
+    val subMenu: SubMenu = menu.addSubMenu("Contacts")
+
+    val auth = FirebaseAuth.getInstance()
+    val firestore = FirebaseFirestore.getInstance()
+
+    val currentUser = auth.currentUser
+    val userId = currentUser?.uid
+    val userRef = firestore.collection("users").document(userId!!)
+
+    userRef.get().addOnSuccessListener { user ->
+        if (user != null) {
+            // Get user data
+            val userRole = user.getString("Role")
+            val otherRole = if (userRole == "JobSeeker") "Recruiter" else "JobSeeker"
+
+            userRole?.let {
+                firestore.collection("matchmaking").whereEqualTo(it, userId).get()
+                    .addOnSuccessListener { matchs ->
+                        var nbr_of_none: Int = 0
+                        for (match in matchs) {
+                            val otherID = match.getString(otherRole)
+
+                            val otherRef = firestore.collection("users").document(otherID!!)
+                            otherRef.get().addOnSuccessListener { otherUser ->
+                                if (otherUser != null) {
+                                    val otherName = otherUser.getString("username")
+
+                                    if (otherName == "none") {
+                                        nbr_of_none += 1
+                                        subMenu.add("Contact without name $nbr_of_none")
+                                    } else {
+                                        subMenu.add(otherName)
+                                    }
+                                    // Invalidate the menu after adding all items
+                                    navigationView.invalidate()
+                                }
+                            }
+                                .addOnFailureListener { exception ->
+                                    Toast.makeText(
+                                        context,
+                                        "No contact find :$exception",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        Toast.makeText(context, "No match find :$exception", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+            }
+        }
+    }
+
+    //navigationView.invalidate()
 }
 
 @Composable
@@ -436,7 +503,11 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                             )
 
                             if (imageUrl != null) {
-                                saveUserLiked(context = context, imageUrl = imageUrl, liked = false)
+                                saveUserLiked(
+                                    context = context,
+                                    imageUrl = imageUrl,
+                                    liked = false
+                                )
                             }
 
                             if (currentIndex + 1 <= imageUrls.size) {
@@ -473,7 +544,11 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                             )
 
                             if (imageUrl != null) {
-                                saveUserLiked(context = context, imageUrl = imageUrl, liked = true)
+                                saveUserLiked(
+                                    context = context,
+                                    imageUrl = imageUrl,
+                                    liked = true
+                                )
                             }
 
                             if (currentIndex + 1 <= imageUrls.size) {
@@ -498,5 +573,52 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                 }
             }
         }
+    }
+}
+
+fun fetchImageUrls(context: Context, callback: (List<String>) -> Unit) {
+    val auth = FirebaseAuth.getInstance()
+    val firestore = FirebaseFirestore.getInstance()
+    val currentUser = auth.currentUser
+
+    if (currentUser != null) {
+        firestore.collection("users").document(currentUser.uid).get().addOnSuccessListener { document ->
+            val role = document.getString("role") ?: ""
+            val targetRole = if (role.equals("Recruiter", ignoreCase = true)) "JobSeeker" else "Recruiter"
+            val field = if (role.equals("Recruiter", ignoreCase = true)) "cv" else "job_offer"
+
+            firestore.collection("users").whereEqualTo("role", targetRole).get().addOnSuccessListener { querySnapshot ->
+                val userId = currentUser.uid
+                val likedMap = document.get("liked") as? HashMap<String, Boolean> ?: hashMapOf()
+                val likedImages = likedMap.filterValues { it == true }.keys // Get the IDs of liked images
+
+                val urls = querySnapshot.documents.mapNotNull { document ->
+                    val imageUrl = document.getString(field)
+                    val imageId = document.id
+
+                    // Check if the image has already been liked or disliked
+                    if (!likedImages.contains(imageId)) {
+                        imageUrl
+                    } else {
+                        null // Exclude the image URL if it has been liked or disliked
+                    }
+                }
+
+                if (urls.isNotEmpty()) {
+                    callback(urls)
+                } else {
+                    // Handling case where no documents were found for the role
+                    Toast.makeText(context, "No more documents found for $role", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener { e ->
+                // Handling case where fetching documents fails
+                Toast.makeText(context, "Failed to fetch data: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }.addOnFailureListener { e ->
+            // Handling case where fetching the current user document fails
+            Toast.makeText(context, "Failed to fetch user data: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    } else {
+        Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show()
     }
 }
