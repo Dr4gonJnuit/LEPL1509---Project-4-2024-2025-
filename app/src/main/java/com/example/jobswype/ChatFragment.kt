@@ -2,7 +2,7 @@ package com.example.jobswype
 
 import ChatRecyclerAdapter
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,9 +24,16 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
 
 class ChatFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
@@ -74,7 +82,6 @@ class ChatFragment : Fragment() {
 
         sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
         recipientUserId = sharedViewModel.selectedContact
-        println("recipientUserId: $recipientUserId")
         loadContactData(view, recipientUserId)
         // Initialize views
         val buttonSendMessage = view.findViewById<ImageView>(R.id.send_button)
@@ -123,7 +130,6 @@ class ChatFragment : Fragment() {
                                         matchmakingID = match.id
                                         val otherUserRef = firestore.collection("users").document(otherID)
                                         otherUserRef.get().addOnSuccessListener { otherUser ->
-                                            println("otherUser: $otherUser")
                                             val nameContact = view?.findViewById<TextView>(R.id.username)
                                             nameContact?.text = otherUser.getString("username")
                                             if (nameContact?.text == "none") {
@@ -222,6 +228,7 @@ class ChatFragment : Fragment() {
                         "Message sent successfully",
                         Toast.LENGTH_SHORT
                     ).show()
+                    sendNotification(messageText)
 
                 } else {
                     Toast.makeText(requireContext(), "Fail to send the message", Toast.LENGTH_SHORT)
@@ -229,111 +236,64 @@ class ChatFragment : Fragment() {
                 }
             }
     }
-}
 
-/*
-    private fun loadContacts(navigationView: NavigationView, view: View, context: Context) {
+    private fun sendNotification(messageText: String) {
         val currentUser = auth.currentUser
-        val userID = currentUser?.uid
-
-        firestore.collection("users").document(userID!!)
-            .get()
-            .addOnSuccessListener { result ->
-                val userRole = result.getString("role")
-
-                firestore.collection("matchmaking").whereEqualTo(userRole!!, userID)
-                    .get()
-                    .addOnSuccessListener { matchs ->
-                        for (match in matchs) {
-                            val otherID =
-                                if (userRole == "JobSeeker") match.getString("Recruiter") else match.getString(
-                                    "JobSeeker"
-                                )
-
-                            val matchID = match.id
-
-                            firestore.collection("users").document(otherID!!)
-                                .get()
-                                .addOnSuccessListener { otherUser ->
-                                    val otherName = otherUser.getString("username")
-
-                                    val itemID = generateIntIdFromStringId(otherID)
-                                    userIDandInt[itemID] = otherID
-
-                                    val menuItem = navigationView.menu.add(
-                                        R.id.contacts_group, // group id
-                                        itemID, // item id
-                                        Menu.NONE, // order
-                                        otherName!! // title
-                                    )
-
-                                    // Add a click listener to the menu item
-                                    menuItem.setOnMenuItemClickListener { clickedMenuItem ->
-                                        // Retrieve the user ID from the map
-                                        val clickedUserId = userIDandInt[clickedMenuItem.itemId]
-                                        loadUserAndMessages(context, matchID, userID, clickedUserId!!, view)
-                                        // Display a Toast with the user ID
-                                        //Toast.makeText(context, "User ID: $clickedUserId", Toast.LENGTH_SHORT).show()
-                                        true // Indicate that the click event has been handled
-                                    }
-                                }
+        val senderUserId = currentUser?.uid
+        val userRef = firestore.collection("users").document(senderUserId!!)
+        userRef.get().addOnSuccessListener { user ->
+            if (user != null) {
+                val userRole = user.getString("role")
+                val otherRole = if (userRole == "JobSeeker") "Recruiter" else "JobSeeker"
+                firestore.collection("matchmaking").document(matchmakingID).get()
+                    .addOnSuccessListener { match ->
+                        val otherID = match.getString(otherRole)
+                        val otherUserRef = firestore.collection("users").document(otherID!!)
+                        otherUserRef.get().addOnSuccessListener { otherUser ->
+                            val otherToken = otherUser.getString("fcmToken")
+                            val senderName = user.getString("username")
+                            try {
+                                val jsonObject = JSONObject()
+                                val notificationObject = JSONObject()
+                                notificationObject.put("title", senderName)
+                                notificationObject.put("body", messageText)
+                                jsonObject.put("notification", notificationObject)
+                                jsonObject.put("to", otherToken)
+                                callApi(jsonObject)
+                            } catch (e: Exception) {
+                                Log.e("Error", e.toString())
+                            }
                         }
                     }
             }
-            .addOnFailureListener { exception ->
-                // Handle failures
-            }
+        }
     }
 
-    private fun loadUserAndMessages(context: Context, matchID: String, userID: String, otherID: String, view: View) {
-        firestore.collection("users").document(otherID)
-            .get()
-            .addOnSuccessListener { user ->
-                recipientUserId = otherID
-                matchmakingID = matchID
-                val nameContact = view.findViewById<TextView>(R.id.name_user)
-                nameContact.text = user.getString("username")
+    fun callApi(jsonObject: JSONObject){
+        val JSON: MediaType = "application/json".toMediaType()
+        val client = OkHttpClient()
 
-                // Load existing messages
-                firestore.collection("messages")
-                    .whereEqualTo("matchmakingID", matchmakingID)
-                    //.whereEqualTo("recipient", otherID)
-                    .orderBy("timestamp")
-                    .get()
-                    .addOnSuccessListener { messages ->
-                        val messageView = view.findViewById<TextView>(R.id.messages_view)
-
-                        for (message in messages) {
-                            val messageText = message.getString("text")
-
-                            messageView.text = "${messageView.text}\n$messageText\n"
-                        }
-                    }
-                    .addOnFailureListener { exception ->
-                        Log.w(TAG, "Error getting messages", exception)
-                        Toast.makeText(
-                            context,
-                            "Fail to get your conversation : $exception",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+        val url = "https://fcm.googleapis.com/fcm/send"
+        val body = jsonObject.toString().toRequestBody(JSON)
+        val request = okhttp3.Request.Builder()
+            .url(url)
+            .post(body)
+            .addHeader("Authorization", "Bearer AAAA_Tn40MY:APA91bFcMiUxV8S6FYE8J_cX3Vhn_ZQsbRaAJQcJPRsbOUW4zP1vWAQpZ4QvbEBI9Nwk1IImNnR1K1H8Sza2SpNW5GR1Ugk70s6OvX0QgewVlchOXdfAMUWIEVL5_tqFK7p4G-2ydLNS")
+            .build()
+        client.newCall(request).enqueue(object : okhttp3.Callback {
+            override fun onFailure(call: okhttp3.Call, e: java.io.IOException) {
+                Log.e("Error", e.toString())
             }
-            .addOnFailureListener { exception ->
-                Toast.makeText(
-                    context,
-                    "Fail to get the user name: $exception",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-    }
 
-    fun generateIntIdFromStringId(stringId: String): Int {
-        // Use SHA-256 hashing algorithm
-        val bytes = MessageDigest.getInstance("SHA-256").digest(stringId.toByteArray())
-        // Convert the hash bytes to an integer ID
-        val id = bytes.fold(0) { acc, byte -> (acc shl 8) or (byte.toInt() and 0xFF) }
-        // Return the integer ID
-        return id
+            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
+                Log.e("Response Code", response.code.toString())
+                try {
+                    val responseBody = response.body?.string()
+                    Log.e("Response Body", responseBody ?: "Empty response body")
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+        })
     }
 }
-*/

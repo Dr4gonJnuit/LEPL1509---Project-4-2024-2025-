@@ -1,10 +1,11 @@
 package com.example.jobswype
 
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import android.view.Menu
+import android.util.Log
 import android.view.MenuItem
-import android.view.SubMenu
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -31,7 +32,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -45,6 +47,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -53,13 +57,17 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.example.jobswype.session.LoginSession
-import com.example.jobswype.ui.theme.*
+import com.example.jobswype.ui.theme.Blue_dark
+import com.example.jobswype.ui.theme.Blue_light
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.storage
 import kotlinx.coroutines.launch
 import kotlin.math.abs
@@ -68,18 +76,15 @@ import kotlin.math.abs
 class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var bottomNavigationView: BottomNavigationView
-    var storage = Firebase.storage
-    var storageRef = storage.reference
-
+    private val NOTIFICATION_PERMISSION_REQUEST_CODE = 100
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        //toolbar.visibility = View.VISIBLE
         setSupportActionBar(toolbar)
 
         // Navigation Drawer
-        drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
+        drawerLayout = findViewById(R.id.drawer_layout)
 
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this@MainActivity::setNavigationItemSelectedListener)
@@ -125,6 +130,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
         replaceFragment(HomeFragment())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val notificationPermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+            if (notificationPermission != PackageManager.PERMISSION_GRANTED) {
+                // Demander la permission de notification
+                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), NOTIFICATION_PERMISSION_REQUEST_CODE)
+            }
+
+        }
+
+        getFCMToken()
     }
 
     @Override
@@ -135,23 +150,31 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.nav_logout -> {
-                AlertDialog.Builder(this) // Use 'this' (activity's context) instead of 'context'
-                    .setTitle("Logout")
-                    .setMessage("Are you sure you want to logout?")
-                    .setPositiveButton("Yes") { _, _ ->
-                        FirebaseAuth.getInstance().signOut()
-                        val loginSession = LoginSession(this)
-                        loginSession.logoutUser()
-                        finish()
+                FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener {
+                    object : OnCompleteListener<Void> {
+                        override fun onComplete(task: Task<Void>) {
+                            if (!task.isSuccessful) {
+                                AlertDialog.Builder(this@MainActivity)
+                                    .setTitle("Logout")
+                                    .setMessage("Are you sure you want to logout?")
+                                    .setPositiveButton("Yes") { _, _ ->
+                                        FirebaseAuth.getInstance().signOut()
+                                        val loginSession = LoginSession(this@MainActivity)
+                                        loginSession.logoutUser()
+                                        finish()
+                                    }
+                                    .setNegativeButton("No", null)
+                                    .show() // Show the AlertDialog
+                            }
+                            Log.d("FCMToken", "FCM registration token deleted")
+                        }
                     }
-                    .setNegativeButton("No", null)
-                    .show() // Show the AlertDialog
+                }
             }
         }
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
-
 
     @Deprecated("Deprecated in Java")
     @Override
@@ -167,6 +190,45 @@ class MainActivity : AppCompatActivity() {
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
             .commit()
+    }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == NOTIFICATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission allowed", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+
+            }
+        }
+    }
+
+    private fun getFCMToken() {
+        // Initialize Firebase instances
+        val auth = FirebaseAuth.getInstance()
+        val firestore = FirebaseFirestore.getInstance()
+
+        val currentUser = auth.currentUser
+        val userId = currentUser?.uid
+        val userRef = firestore.collection("users").document(userId!!)
+
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("FCMToken", "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+            userRef.update("fcmToken", token)
+                .addOnSuccessListener {
+                    Log.d("FCMToken", "FCM registration token: $token")
+                }
+                .addOnFailureListener { e ->
+                    Log.e("FCMToken", "Error updating FCM registration token: $e")
+                }
+        })
     }
 
 }
@@ -201,10 +263,6 @@ fun loadUserData(view: View, context: Context) {
                 phone = ""
             }
 
-            var aboutMe = user.getString("aboutme")
-            if (aboutMe == "none") {
-                aboutMe = ""
-            }
             val profileImageUrl = user.getString("profilePic")
 
 
@@ -336,73 +394,13 @@ fun saveUserLiked(context: Context, imageUrl: String, liked: Boolean) {
         println("Error getting user data: $e")
     }
 }
-
-fun addContactsMenu(context: Context, navigationView: NavigationView) {
-    val menu: Menu = navigationView.menu
-    val subMenu: SubMenu = menu.addSubMenu("Contacts")
-
-    val auth = FirebaseAuth.getInstance()
-    val firestore = FirebaseFirestore.getInstance()
-
-    val currentUser = auth.currentUser
-    val userId = currentUser?.uid
-    val userRef = firestore.collection("users").document(userId!!)
-
-    userRef.get().addOnSuccessListener { user ->
-        if (user != null) {
-            // Get user data
-            val userRole = user.getString("Role")
-            val otherRole = if (userRole == "JobSeeker") "Recruiter" else "JobSeeker"
-
-            userRole?.let {
-                firestore.collection("matchmaking").whereEqualTo(it, userId).get()
-                    .addOnSuccessListener { matchs ->
-                        var nbr_of_none: Int = 0
-                        for (match in matchs) {
-                            val otherID = match.getString(otherRole)
-
-                            val otherRef = firestore.collection("users").document(otherID!!)
-                            otherRef.get().addOnSuccessListener { otherUser ->
-                                if (otherUser != null) {
-                                    val otherName = otherUser.getString("username")
-
-                                    if (otherName == "none") {
-                                        nbr_of_none += 1
-                                        subMenu.add("Contact without name $nbr_of_none")
-                                    } else {
-                                        subMenu.add(otherName)
-                                    }
-                                    // Invalidate the menu after adding all items
-                                    navigationView.invalidate()
-                                }
-                            }
-                                .addOnFailureListener { exception ->
-                                    Toast.makeText(
-                                        context,
-                                        "No contact find :$exception",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                        }
-                    }
-                    .addOnFailureListener { exception ->
-                        Toast.makeText(context, "No match find :$exception", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-            }
-        }
-    }
-
-    //navigationView.invalidate()
-}
-
 @Composable
 fun MyAppContent(context: Context, imageUrls: List<String>) {
-    var currentIndex by remember { mutableStateOf(0) }
+    var currentIndex by remember { mutableIntStateOf(0) }
     val imageUrl = imageUrls.getOrNull(currentIndex)
 
     // State for tracking drag amount
-    var offsetX by remember { mutableStateOf(0f) }
+    var offsetX by remember { mutableFloatStateOf(0f) }
     val coroutineScope = rememberCoroutineScope()
     val animatedOffsetX = remember { Animatable(0f) }
 
@@ -586,9 +584,8 @@ fun fetchImageUrls(context: Context, callback: (List<String>) -> Unit) {
             val field = if (role.equals("Recruiter", ignoreCase = true)) "cv" else "job_offer"
 
             firestore.collection("users").whereEqualTo("role", targetRole).get().addOnSuccessListener { querySnapshot ->
-                val userId = currentUser.uid
                 val likedMap = document.get("liked") as? HashMap<String, Boolean> ?: hashMapOf()
-                val likedImages = likedMap.filterValues { it == true }.keys // Get the IDs of liked images
+                val likedImages = likedMap.filterValues { it }.keys // Get the IDs of liked images
 
                 val urls = querySnapshot.documents.mapNotNull { document ->
                     val imageUrl = document.getString(field)

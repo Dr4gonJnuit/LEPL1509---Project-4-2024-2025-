@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" /> <!-- This is the permission to access the internet -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- This is the permission to access the network state -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- This is the permission to keep the device awake -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- This is the permission to post notifications -->
 
     <application
         android:allowBackup="true"
@@ -36,6 +38,12 @@
         <activity
             android:name=".SignupActivity"
             android:exported="false" />
+        <service android:name=".FCMNotificationService" android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>
