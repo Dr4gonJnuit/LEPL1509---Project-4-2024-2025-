@@ -83,7 +83,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:layout_toLeftOf="@id/send_button"
+            android:layout_toStartOf="@id/send_button"
             android:background="@drawable/user_item_bkg"
             android:elevation="4dp"
             android:hint="Type a message..."

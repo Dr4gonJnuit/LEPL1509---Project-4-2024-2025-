@@ -18,7 +18,6 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.example.jobswype.model.ChatModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -35,8 +34,6 @@ class ChatFragment : Fragment() {
 
     private lateinit var sharedViewModel: SharedViewModel
 
-    // Stock the user ID with it's number
-    private val userIDandInt = HashMap<Int, String>()
 
     private lateinit var recipientUserId: String
     private lateinit var matchmakingID: String
@@ -66,7 +63,7 @@ class ChatFragment : Fragment() {
         val adapter = ChatRecyclerAdapter(requireContext(), listOf())
         recyclerView = view.findViewById(R.id.chat_recycler_view)
         recyclerView.adapter = adapter
-        var tempLayoutManager = LinearLayoutManager(requireContext())
+        val tempLayoutManager = LinearLayoutManager(requireContext())
         tempLayoutManager.stackFromEnd = true
         recyclerView.layoutManager = tempLayoutManager
 
@@ -75,11 +72,9 @@ class ChatFragment : Fragment() {
         firestore = FirebaseFirestore.getInstance()
         database = FirebaseDatabase.getInstance()
 
-
-        //val navigationView = (requireActivity() as MainActivity).getNavigationView()
-        //loadContacts(navigationView, view, requireContext())
-        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+        sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
         recipientUserId = sharedViewModel.selectedContact
+        println("recipientUserId: $recipientUserId")
         loadContactData(view, recipientUserId)
         // Initialize views
         val buttonSendMessage = view.findViewById<ImageView>(R.id.send_button)
@@ -126,11 +121,10 @@ class ChatFragment : Fragment() {
                                 if (otherID != null) {
                                     if (otherID == recipientUserId) {
                                         matchmakingID = match.id
-                                        val otherUserRef =
-                                            firestore.collection("users").document(otherID)
+                                        val otherUserRef = firestore.collection("users").document(otherID)
                                         otherUserRef.get().addOnSuccessListener { otherUser ->
-                                            val nameContact =
-                                                view?.findViewById<TextView>(R.id.username)
+                                            println("otherUser: $otherUser")
+                                            val nameContact = view?.findViewById<TextView>(R.id.username)
                                             nameContact?.text = otherUser.getString("username")
                                             if (nameContact?.text == "none") {
                                                 nameContact.text =
@@ -139,8 +133,7 @@ class ChatFragment : Fragment() {
                                                         otherUser.getString("email")!!.indexOf("@")
                                                     )
                                             }
-                                            val profilepicContact =
-                                                view?.findViewById<ImageView>(R.id.profilePic)
+                                            val profilepicContact = view?.findViewById<ImageView>(R.id.profilePic)
                                             val profileImageUrl = otherUser.getString("profilePic")
                                             if (profileImageUrl == "none"){
                                                 profilepicContact?.setImageResource(R.drawable.default_pdp)
