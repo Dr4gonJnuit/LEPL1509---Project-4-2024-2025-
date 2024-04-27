@@ -7,8 +7,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="grey">#FFD3D3D3</color>
+    <color name="light_grey">#FFD3D3D3</color>
     <color name="logo_color">#F4F4FF</color>
+    <color name="item_bkg">#f7f7ff</color>
     <color name="blue_light">#D6D9FF</color>
     <color name="blue">#A0B1F9</color>
     <color name="blue_dark">#746DF1</color>
+    <color name="msg_sender">#c796eb</color>
+    <color name="msg_receiver">#96aaeb</color>
 </resources>

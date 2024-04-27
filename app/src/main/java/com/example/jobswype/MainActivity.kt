@@ -74,11 +74,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        //toolbar.visibility = View.VISIBLE
+        setSupportActionBar(toolbar)
 
         // Navigation Drawer
         drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
 
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this@MainActivity::setNavigationItemSelectedListener)
@@ -168,9 +169,6 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-    fun getNavigationView(): NavigationView {
-        return findViewById(R.id.nav_view)
-    }
 }
 
 fun loadUserData(view: View, context: Context) {
@@ -608,7 +606,7 @@ fun fetchImageUrls(context: Context, callback: (List<String>) -> Unit) {
                     callback(urls)
                 } else {
                     // Handling case where no documents were found for the role
-                    Toast.makeText(context, "No more documents found for $role", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "No more offer found for $role", Toast.LENGTH_SHORT).show()
                 }
             }.addOnFailureListener { e ->
                 // Handling case where fetching documents fails
