@@ -45,7 +45,6 @@ class MessagesFragment : Fragment() {
                                 if (otherID != null) {
                                     // Accéder aux informations de l'utilisateur correspondant
                                     val count = matchs.indexOf(match) + 1
-                                    println(count)
                                     val otherUserRef = firestore.collection("users").document(otherID)
                                     otherUserRef.get().addOnSuccessListener { otherUser ->
                                         val layout = resources.getIdentifier("msg_layout_$count", "id", requireContext().packageName)
@@ -67,17 +66,25 @@ class MessagesFragment : Fragment() {
                                         val user_item_image = resources.getIdentifier("user_item_image_$count", "id", requireContext().packageName)
                                         val itemImage = view?.findViewById<ImageView>(user_item_image)
                                         val profileImageUrl = otherUser.getString("profilePic")
+                                        if (profileImageUrl == "none") {
+                                            itemImage?.setImageResource(R.drawable.default_pdp)
+                                        } else {
 
-                                        // Load profile image using Glide
-                                        profileImageUrl?.let {
-                                            if (itemImage != null) {
-                                                context?.let { it1 ->
-                                                    Glide.with(it1)
-                                                        .load(it)
-                                                        .apply(RequestOptions.bitmapTransform(CircleCrop())) // Apply a transform circle
-                                                        .placeholder(R.drawable.default_pdp) // Placeholder image while loading
-                                                        .error(R.drawable.default_pdp) // Image to show if loading fails
-                                                        .into(itemImage)
+                                            // Load profile image using Glide
+                                            profileImageUrl?.let {
+                                                if (itemImage != null) {
+                                                    context?.let { it1 ->
+                                                        Glide.with(it1)
+                                                            .load(it)
+                                                            .apply(
+                                                                RequestOptions.bitmapTransform(
+                                                                    CircleCrop()
+                                                                )
+                                                            ) // Apply a transform circle
+                                                            .placeholder(R.drawable.default_pdp) // Placeholder image while loading
+                                                            .error(R.drawable.default_pdp) // Image to show if loading fails
+                                                            .into(itemImage)
+                                                    }
                                                 }
                                             }
                                         }

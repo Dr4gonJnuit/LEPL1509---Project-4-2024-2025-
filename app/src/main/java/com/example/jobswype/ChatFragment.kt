@@ -60,12 +60,15 @@ class ChatFragment : Fragment() {
         // back button
         val backButton = view.findViewById<ImageView>(R.id.backArrow)
         backButton.setOnClickListener {
-            requireActivity().onBackPressed()
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
         val adapter = ChatRecyclerAdapter(requireContext(), listOf())
         recyclerView = view.findViewById(R.id.chat_recycler_view)
         recyclerView.adapter = adapter
+        var tempLayoutManager = LinearLayoutManager(requireContext())
+        tempLayoutManager.stackFromEnd = true
+        recyclerView.layoutManager = tempLayoutManager
 
         // Access to FireStore
         auth = FirebaseAuth.getInstance()
@@ -129,48 +132,56 @@ class ChatFragment : Fragment() {
                                             val nameContact =
                                                 view?.findViewById<TextView>(R.id.username)
                                             nameContact?.text = otherUser.getString("username")
+                                            if (nameContact?.text == "none") {
+                                                nameContact.text =
+                                                    otherUser.getString("email")?.substring(
+                                                        0,
+                                                        otherUser.getString("email")!!.indexOf("@")
+                                                    )
+                                            }
                                             val profilepicContact =
                                                 view?.findViewById<ImageView>(R.id.profilePic)
                                             val profileImageUrl = otherUser.getString("profilePic")
-
-                                            profileImageUrl?.let {
-                                                if (profilepicContact != null) {
-                                                    context?.let { it1 ->
-                                                        Glide.with(it1)
-                                                            .load(it)
-                                                            .apply(
-                                                                RequestOptions.bitmapTransform(
-                                                                    CircleCrop()
-                                                                )
-                                                            ) // Apply a transform circle
-                                                            .placeholder(R.drawable.default_pdp) // Placeholder image while loading
-                                                            .error(R.drawable.default_pdp) // Image to show if loading fails
-                                                            .into(profilepicContact)
+                                            if (profileImageUrl == "none"){
+                                                profilepicContact?.setImageResource(R.drawable.default_pdp)
+                                            } else {
+                                                profileImageUrl?.let {
+                                                    if (profilepicContact != null) {
+                                                        context?.let { it1 ->
+                                                            Glide.with(it1)
+                                                                .load(it)
+                                                                .apply(
+                                                                    RequestOptions.bitmapTransform(
+                                                                        CircleCrop()
+                                                                    )
+                                                                ) // Apply a transform circle
+                                                                .placeholder(R.drawable.default_pdp) // Placeholder image while loading
+                                                                .error(R.drawable.default_pdp) // Image to show if loading fails
+                                                                .into(profilepicContact)
+                                                        }
                                                     }
                                                 }
                                             }
-                                            // Initialize RecyclerView
-                                            val recyclerView =
-                                                view?.findViewById<RecyclerView>(R.id.chat_recycler_view)
-
                                             // Configure RecyclerView layout manager
-                                            recyclerView?.layoutManager =
-                                                LinearLayoutManager(requireContext())
+                                            val linearLayoutManager = LinearLayoutManager(requireContext())
+                                            linearLayoutManager.stackFromEnd = true
+                                            recyclerView.layoutManager = linearLayoutManager
 
                                             val reference = database.getReference("messages")
                                                 .child(matchmakingID)
-                                            println("database datas: $reference")
                                             reference.addValueEventListener(object : ValueEventListener {
                                                 override fun onDataChange(snapshot: DataSnapshot) {
                                                     messageList.clear()
                                                     for (data in snapshot.children) {
                                                         val message = data.getValue(ChatModel::class.java)
                                                         if (message != null) {
+                                                            message.currentUserID = userId
                                                             messageList.add(message)
                                                         }
                                                     }
                                                     adapter = ChatRecyclerAdapter(requireContext(), messageList)
-                                                    recyclerView?.adapter = adapter
+                                                    adapter.notifyItemInserted(messageList.size - 1)
+                                                    recyclerView.adapter = adapter
                                                 }
 
                                                 override fun onCancelled(error: DatabaseError) {

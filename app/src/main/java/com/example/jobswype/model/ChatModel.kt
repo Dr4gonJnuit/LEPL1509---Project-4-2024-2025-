@@ -1,7 +1,7 @@
 package com.example.jobswype.model
 
 data class ChatModel(
-    val currentUserID : String?, // Current user ID
+    var currentUserID : String?, // Current user ID
     val sender: String?, // ID de l'expéditeur
     val recipient: String?, // ID du destinataire
     val message: String?, // Contenu du message
