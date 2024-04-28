@@ -1,6 +1,7 @@
 package com.example.jobswype
 
 import ChatRecyclerAdapter
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -67,11 +68,12 @@ class ChatFragment : Fragment() {
         backButton.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
+        val context = context
 
-        val adapter = ChatRecyclerAdapter(requireContext(), listOf())
+        val adapter = context?.let { ChatRecyclerAdapter(it, listOf()) }
         recyclerView = view.findViewById(R.id.chat_recycler_view)
         recyclerView.adapter = adapter
-        val tempLayoutManager = LinearLayoutManager(requireContext())
+        val tempLayoutManager = LinearLayoutManager(context)
         tempLayoutManager.stackFromEnd = true
         recyclerView.layoutManager = tempLayoutManager
 
@@ -82,7 +84,9 @@ class ChatFragment : Fragment() {
 
         sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
         recipientUserId = sharedViewModel.selectedContact
-        loadContactData(view, recipientUserId)
+        if (context != null) {
+            loadContactData(view, recipientUserId, context)
+        }
         // Initialize views
         val buttonSendMessage = view.findViewById<ImageView>(R.id.send_button)
         val messageEditText = view.findViewById<TextView>(R.id.message_edit_text)
@@ -93,7 +97,7 @@ class ChatFragment : Fragment() {
                 sendMessage(messageText)
                 messageEditText.text = ""
             } else {
-                Toast.makeText(requireContext(), "Please enter a message", Toast.LENGTH_SHORT)
+                Toast.makeText(context, "Please enter a message", Toast.LENGTH_SHORT)
                     .show()
             }
         }
@@ -109,7 +113,7 @@ class ChatFragment : Fragment() {
         mainToolbar.visibility = View.VISIBLE
     }
 
-    private fun loadContactData(view: View?, recipientUserId: String) {
+    private fun loadContactData(view: View?, recipientUserId: String, context: Context) {
         val currentUser = auth.currentUser
         val userId = currentUser?.uid
         val userRef = firestore.collection("users").document(userId!!)
@@ -146,7 +150,7 @@ class ChatFragment : Fragment() {
                                             } else {
                                                 profileImageUrl?.let {
                                                     if (profilepicContact != null) {
-                                                        context?.let { it1 ->
+                                                        context.let { it1 ->
                                                             Glide.with(it1)
                                                                 .load(it)
                                                                 .apply(
@@ -162,7 +166,7 @@ class ChatFragment : Fragment() {
                                                 }
                                             }
                                             // Configure RecyclerView layout manager
-                                            val linearLayoutManager = LinearLayoutManager(requireContext())
+                                            val linearLayoutManager = LinearLayoutManager(context)
                                             linearLayoutManager.stackFromEnd = true
                                             recyclerView.layoutManager = linearLayoutManager
 
@@ -178,14 +182,14 @@ class ChatFragment : Fragment() {
                                                             messageList.add(message)
                                                         }
                                                     }
-                                                    adapter = ChatRecyclerAdapter(requireContext(), messageList)
+                                                    adapter = ChatRecyclerAdapter(context, messageList)
                                                     adapter.notifyItemInserted(messageList.size - 1)
                                                     recyclerView.adapter = adapter
                                                 }
 
                                                 override fun onCancelled(error: DatabaseError) {
                                                     Toast.makeText(
-                                                        requireContext(),
+                                                        context,
                                                         "Fail to get the messages",
                                                         Toast.LENGTH_SHORT
                                                     ).show()
@@ -228,7 +232,7 @@ class ChatFragment : Fragment() {
 
                 } else {
                     Log.e("ChatFragment", "Fail to send the message")
-                    Toast.makeText(requireContext(), "Fail to send the message", Toast.LENGTH_SHORT)
+                    Toast.makeText(context, "Fail to send the message", Toast.LENGTH_SHORT)
                         .show()
                 }
             }
