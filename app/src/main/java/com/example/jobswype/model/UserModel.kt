@@ -12,7 +12,7 @@ data class UserModel(
     val userId: String?,
     val liked: HashMap<String, Boolean>?,
     val aboutme: String?,
-    val fcmtoken: String?
+    val fcmToken: String?
 ){
     constructor() : this("", "", "", "", "", "", "", "", "", HashMap(), "", "")
 }
