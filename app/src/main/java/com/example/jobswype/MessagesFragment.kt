@@ -2,6 +2,7 @@ package com.example.jobswype
 
 import MessageUserAdapter
 import OnContactItemClickListener
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -41,6 +42,13 @@ class MessagesFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         contactList.clear()
 
+        val context = requireActivity()
+        getContatcs(context)
+
+        return view
+    }
+
+    private fun getContatcs(context: Context?){
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
@@ -65,25 +73,29 @@ class MessagesFragment : Fragment() {
                                     otherUserRef.get().addOnSuccessListener { otherUser ->
 
                                         // Configure RecyclerView layout manager
-                                        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+                                        recyclerView.layoutManager = LinearLayoutManager(context)
 
                                         // Accéder aux données de l'utilisateur correspondant dans Firestore et afficher les matchs
                                         val userModel = otherUser.toObject(UserModel::class.java)
                                         userModel?.let {
                                             contactList.add(it)
 
-                                            adapter = MessageUserAdapter(requireContext(), contactList, object : OnContactItemClickListener {
-                                                override fun onContactItemClicked(position: Int) {
-                                                    // Récupérer le contact correspondant à l'index cliqué
-                                                    val clickedContact = contactList[position]
+                                            adapter = context?.let { it1 ->
+                                                MessageUserAdapter(it1, contactList, object : OnContactItemClickListener {
+                                                    override fun onContactItemClicked(position: Int) {
+                                                        // Récupérer le contact correspondant à l'index cliqué
+                                                        val clickedContact = contactList[position]
 
-                                                    // Passer le contact sélectionné à votre ViewModel
-                                                    sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
-                                                    sharedViewModel.selectedContact = clickedContact.userId.toString()
+                                                        // Passer le contact sélectionné à votre ViewModel
+                                                        sharedViewModel = ViewModelProvider(
+                                                            requireActivity()
+                                                        )[SharedViewModel::class.java]
+                                                        sharedViewModel.selectedContact = clickedContact.userId.toString()
 
-                                                    activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragment_container, ChatFragment())?.addToBackStack(null)?.commit()
-                                                }
-                                            })
+                                                        activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragment_container, ChatFragment())?.addToBackStack(null)?.commit()
+                                                    }
+                                                })
+                                            }!!
                                             recyclerView.adapter = adapter
                                         }
                                     }.addOnFailureListener { exception ->
@@ -107,7 +119,6 @@ class MessagesFragment : Fragment() {
             Toast.makeText(context, "Failed to get current user data: $exception", Toast.LENGTH_SHORT).show()
         }
 
-        return view
     }
 }
 class SharedViewModel : ViewModel() {
