@@ -8,11 +8,12 @@ data class UserModel(
     val password: String?,
     val role: String?,
     val job_offer: String?,
+    val cv: String?,
     val userId: String?,
     val liked: HashMap<String, Boolean>?,
     val aboutme: String?,
-    val token: String?
+    val fcmtoken: String?
 ){
-    constructor() : this("", "", "", "", "", "", "", "", HashMap(), "", "")
+    constructor() : this("", "", "", "", "", "", "", "", "", HashMap(), "", "")
 }
 
