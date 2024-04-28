@@ -223,14 +223,11 @@ class ChatFragment : Fragment() {
         reference.child(reference.push().key!!)
             .setValue(map).addOnCompleteListener {
                 if (it.isSuccessful) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Message sent successfully",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Log.d("ChatFragment", "Message sent")
                     sendNotification(messageText)
 
                 } else {
+                    Log.e("ChatFragment", "Fail to send the message")
                     Toast.makeText(requireContext(), "Fail to send the message", Toast.LENGTH_SHORT)
                         .show()
                 }

@@ -191,7 +191,7 @@ class SettingsFragment : Fragment() {
                         .addOnSuccessListener {
                             Toast.makeText(
                                 requireContext(),
-                                "Image data saved to CV",
+                                "CV saved successfully",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -212,7 +212,7 @@ class SettingsFragment : Fragment() {
                         .addOnSuccessListener {
                             Toast.makeText(
                                 requireContext(),
-                                "Image data saved to job offer",
+                                "Job offer saved successfully",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -252,7 +252,7 @@ class SettingsFragment : Fragment() {
                     .addOnSuccessListener {
                         Toast.makeText(
                             requireContext(),
-                            "Image data saved to profilePic",
+                            "Profile picture saved successfully",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -277,7 +277,7 @@ class SettingsFragment : Fragment() {
                     .addOnSuccessListener {
                         Toast.makeText(
                             requireContext(),
-                            "Field(s) updated successfully",
+                            "Profile updated successfully",
                             Toast.LENGTH_SHORT
                         ).show()
                     }

@@ -150,26 +150,28 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.nav_logout -> {
-                FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener {
-                    object : OnCompleteListener<Void> {
-                        override fun onComplete(task: Task<Void>) {
-                            if (!task.isSuccessful) {
-                                AlertDialog.Builder(this@MainActivity)
-                                    .setTitle("Logout")
-                                    .setMessage("Are you sure you want to logout?")
-                                    .setPositiveButton("Yes") { _, _ ->
-                                        FirebaseAuth.getInstance().signOut()
-                                        val loginSession = LoginSession(this@MainActivity)
-                                        loginSession.logoutUser()
-                                        finish()
+                AlertDialog.Builder(this@MainActivity)
+                    .setTitle("Logout")
+                    .setMessage("Are you sure you want to logout?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        FirebaseAuth.getInstance().signOut()
+                        val loginSession = LoginSession(this@MainActivity)
+                        loginSession.logoutUser()
+                        FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener {
+                            object : OnCompleteListener<Void> {
+                                override fun onComplete(task: Task<Void>) {
+                                    if (!task.isSuccessful) {
+                                        Log.w("FCMToken", "Fetching FCM registration token failed", task.exception)
+                                        return
                                     }
-                                    .setNegativeButton("No", null)
-                                    .show() // Show the AlertDialog
+                                    Log.d("FCMToken", "FCM registration token deleted")
+                                }
                             }
-                            Log.d("FCMToken", "FCM registration token deleted")
                         }
+                        finish()
                     }
-                }
+                    .setNegativeButton("No", null)
+                    .show() // Show the AlertDialog
             }
         }
         drawerLayout.closeDrawer(GravityCompat.START)
