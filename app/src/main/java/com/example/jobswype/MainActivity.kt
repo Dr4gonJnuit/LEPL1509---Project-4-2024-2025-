@@ -211,26 +211,29 @@ class MainActivity : AppCompatActivity() {
         val firestore = FirebaseFirestore.getInstance()
 
         val currentUser = auth.currentUser
-        val userId = currentUser?.uid
-        val userRef = firestore.collection("users").document(userId!!)
+        if (currentUser != null) {
+            val userId = currentUser.uid
+            val userRef = firestore.collection("users").document(userId)
 
+            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w("FCMToken", "Fetching FCM registration token failed", task.exception)
+                    return@addOnCompleteListener
+                }
 
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.w("FCMToken", "Fetching FCM registration token failed", task.exception)
-                return@OnCompleteListener
+                // Get new FCM registration token
+                val token = task.result
+                userRef.update("fcmToken", token)
+                    .addOnSuccessListener {
+                        Log.d("FCMToken", "FCM registration token: $token")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("FCMToken", "Error updating FCM registration token: $e")
+                    }
             }
-
-            // Get new FCM registration token
-            val token = task.result
-            userRef.update("fcmToken", token)
-                .addOnSuccessListener {
-                    Log.d("FCMToken", "FCM registration token: $token")
-                }
-                .addOnFailureListener { e ->
-                    Log.e("FCMToken", "Error updating FCM registration token: $e")
-                }
-        })
+        } else {
+            Log.e("FCMToken", "Current user is null")
+        }
     }
 
 }

@@ -59,8 +59,8 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.firebase.messaging)
-    implementation("com.github.bumptech.glide:glide:4.13.0")
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.13.0")
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
     // Declare the dependency for the Cloud Firestore library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.google.firebase:firebase-firestore")
