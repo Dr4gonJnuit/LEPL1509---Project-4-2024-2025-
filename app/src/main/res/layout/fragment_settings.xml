@@ -83,7 +83,7 @@
                 android:paddingEnd="50dp"
                 android:textColor="@color/black" />
             <ImageButton
-                android:id="@+id/show_password"
+                android:id="@+id/showPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/baseline_open_eye_24"

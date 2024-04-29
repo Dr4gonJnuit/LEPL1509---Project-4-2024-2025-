@@ -5,7 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.InputType
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.jobswype.databinding.FragmentSettingsBinding
@@ -79,23 +81,22 @@ class SettingsFragment : Fragment() {
         val editPhone = view.findViewById<EditText>(R.id.editPhone)
         val editPassword = view.findViewById<EditText>(R.id.editPassword)
         val saveButton = view.findViewById<Button>(R.id.saveButton)
+        val showPassword = view.findViewById<ImageView>(R.id.showPassword)
 
-        binding.showPassword.setOnClickListener {
+        showPassword.setOnClickListener {
+            println("Show password button clicked")
             // password visibility
-            val isPasswordVisible = binding.editPassword.inputType == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            binding.editPassword.inputType = if (isPasswordVisible) {
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            val isPasswordVisible = editPassword.transformationMethod == PasswordTransformationMethod.getInstance()
+            editPassword.transformationMethod = if (isPasswordVisible) {
+                println("Password is visible")
+                showPassword.background = AppCompatResources.getDrawable(requireContext(), R.drawable.baseline_close_eye_24)
+                HideReturnsTransformationMethod.getInstance()
             } else {
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                println("Password is not visible")
+                showPassword.background = AppCompatResources.getDrawable(requireContext(), R.drawable.baseline_open_eye_24)
+                PasswordTransformationMethod.getInstance()
             }
-            val drawableId = if (isPasswordVisible) {
-                R.drawable.baseline_open_eye_24
-            } else {
-                R.drawable.baseline_close_eye_24
-            }
-            binding.showPassword.setImageResource(drawableId)
-
-            binding.editPassword.setSelection(binding.editPassword.text.length)
+            editPassword.setSelection(editPassword.text.length)
         }
 
         saveButton.setOnClickListener {
