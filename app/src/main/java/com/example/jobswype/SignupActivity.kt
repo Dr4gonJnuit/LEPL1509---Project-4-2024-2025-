@@ -76,7 +76,7 @@ class SignupActivity : AppCompatActivity() {
                             } else {
                                 Toast.makeText(
                                     this,
-                                    "Signup failed: ${task.exception?.message}",
+                                    "Your password is to short, minimum length is 6",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }

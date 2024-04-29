@@ -434,7 +434,7 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                         if (abs(offsetX) > 200) {
                             if (currentIndex + 1 <= imageUrls.size) {
                                 currentIndex += 1
-                            } else {
+                            } /*else {
                                 Toast
                                     .makeText(
                                         context,
@@ -442,7 +442,7 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
                                         Toast.LENGTH_SHORT
                                     )
                                     .show()
-                            }
+                            }*/
                         }
                         offsetX = 0f
                     }) { change, dragAmount ->
@@ -513,13 +513,15 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
 
                             if (currentIndex + 1 <= imageUrls.size) {
                                 currentIndex += 1
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    "No more offers available",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
+                            } /*else {
+                                Toast
+                                    .makeText(
+                                        context,
+                                        "No more offers available",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                    .show()
+                            }*/
                         }
                     },
                     modifier = Modifier
@@ -554,13 +556,15 @@ fun MyAppContent(context: Context, imageUrls: List<String>) {
 
                             if (currentIndex + 1 <= imageUrls.size) {
                                 currentIndex += 1
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    "No more offers available",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
+                            } /*else {
+                                Toast
+                                    .makeText(
+                                        context,
+                                        "No more offers available",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                    .show()
+                            }*/
                         }
                     },
                     modifier = Modifier
