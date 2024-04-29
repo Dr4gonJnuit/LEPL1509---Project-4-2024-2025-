@@ -1,6 +1,5 @@
 package com.example.jobswype
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -102,7 +101,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             checkCVOffre { isEmpty ->
                 if (isEmpty) {
-                    replaceFragment(MessageInformationFragment("No cv/offer, go create one"))
+                    replaceFragment(MessageInformationFragment("To swipe, add a cv/offer"))
                 } else {
                     replaceFragment(HomeFragment())
                 }
@@ -120,7 +119,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.bottom_home -> {
                     checkCVOffre { isEmpty ->
                         if (isEmpty) {
-                            replaceFragment(MessageInformationFragment("No cv/offer, go create one"))
+                            replaceFragment(MessageInformationFragment("Add cv/offer, to swipe"))
                         } else {
                             replaceFragment(HomeFragment())
                         }
