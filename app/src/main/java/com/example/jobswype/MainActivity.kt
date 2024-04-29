@@ -100,7 +100,13 @@ class MainActivity : AppCompatActivity() {
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         if (savedInstanceState == null) {
-            replaceFragment(HomeFragment())
+            checkCVOffre { isEmpty ->
+                if (isEmpty) {
+                    replaceFragment(MessageInformationFragment("No cv/offer, go create one"))
+                } else {
+                    replaceFragment(HomeFragment())
+                }
+            }
             navigationView.setCheckedItem(R.id.bottom_home)
         }
 
