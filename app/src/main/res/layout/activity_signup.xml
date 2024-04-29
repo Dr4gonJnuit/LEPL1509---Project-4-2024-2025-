@@ -64,6 +64,18 @@
             android:textColor="@color/black" />
 
         <Button
+            android:id="@+id/showPasswordButton"
+            android:layout_width="220dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="65dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/blue_border"
+            android:backgroundTint="@color/blue_dark"
+            android:text="show password"
+            android:textColor="@color/white"
+            android:textSize="10sp" />
+
+        <Button
             android:id="@+id/signup_button"
             android:layout_width="match_parent"
             android:layout_height="70dp"

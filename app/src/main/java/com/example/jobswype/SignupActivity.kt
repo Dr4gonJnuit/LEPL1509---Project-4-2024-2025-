@@ -12,6 +12,8 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 
 class SignupActivity : AppCompatActivity() {
 
@@ -76,7 +78,7 @@ class SignupActivity : AppCompatActivity() {
                             } else {
                                 Toast.makeText(
                                     this,
-                                    "Your password is to short, minimum length is 6",
+                                    "Your password is too short, minimum length is 6",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
@@ -87,6 +89,25 @@ class SignupActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "All fields are required.", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        binding.showPasswordButton.setOnClickListener {
+            // password visibility
+            val isPasswordVisible = binding.signupPassword.transformationMethod == PasswordTransformationMethod.getInstance()
+            binding.signupPassword.transformationMethod = if (isPasswordVisible) {
+                HideReturnsTransformationMethod.getInstance()
+            } else {
+                PasswordTransformationMethod.getInstance()
+            }
+            binding.signupPassword.setSelection(binding.signupPassword.text.length)
+
+            val isConfirmPasswordVisible = binding.signupConfirm.transformationMethod == PasswordTransformationMethod.getInstance()
+            binding.signupConfirm.transformationMethod = if (isConfirmPasswordVisible) {
+                HideReturnsTransformationMethod.getInstance()
+            } else {
+                PasswordTransformationMethod.getInstance()
+            }
+            binding.signupConfirm.setSelection(binding.signupConfirm.text.length)
         }
 
         binding.loginRedirectText.setOnClickListener {

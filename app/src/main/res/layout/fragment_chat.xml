@@ -57,7 +57,7 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/message_input_layout"
         android:layout_below="@id/toolbar"
-        android:padding="10dp"
+        android:padding="15dp"
         android:scrollbars="vertical" />
     <!--TextView
         android:id="@+id/chat_view"
@@ -88,13 +88,13 @@
             android:elevation="4dp"
             android:hint="Type a message..."
             android:inputType="textCapSentences"
-            android:padding="10dp" />
+            android:padding="15dp" />
 
 
         <ImageView
             android:id="@+id/send_button"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="47dp"
+            android:layout_height="47dp"
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
             android:src="@drawable/baseline_send_24" />
