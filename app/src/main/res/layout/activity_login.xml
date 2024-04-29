@@ -39,19 +39,35 @@
             android:padding="8dp"
             android:textColor="@color/black" />
 
-        <EditText
-            android:id="@+id/login_password"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/blue_border"
-            android:drawableStart="@drawable/baseline_lock_24"
-            android:drawablePadding="8dp"
-            android:hint="@string/password"
-            android:inputType="textPassword"
-            android:maxLines="1"
-            android:padding="8dp"
-            android:textColor="@color/black" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <EditText
+                android:id="@+id/login_password"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/blue_border"
+                android:drawableStart="@drawable/baseline_lock_24"
+                android:drawablePadding="8dp"
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:paddingStart="8dp"
+                android:paddingEnd="50dp"
+                android:textColor="@color/black" />
+            <ImageButton
+                android:id="@+id/show_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/baseline_open_eye_24"
+                android:padding="15dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_marginEnd="10dp">
+            </ImageButton>
+        </RelativeLayout>
 
         <Button
             android:id="@+id/login_button"

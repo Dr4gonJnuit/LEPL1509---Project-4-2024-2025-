@@ -3,12 +3,15 @@ package com.example.jobswype
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import com.example.jobswype.databinding.ActivityLoginBinding
 import com.example.jobswype.session.LoginSession
 import com.google.firebase.auth.FirebaseAuth
@@ -70,6 +73,19 @@ class LoginActivity : AppCompatActivity() {
                 dialog.window!!.setBackgroundDrawable(ColorDrawable(0))
             }
             dialog.show()
+        }
+
+        binding.showPassword.setOnClickListener {
+            // password visibility
+            val isPasswordVisible = binding.loginPassword.transformationMethod == PasswordTransformationMethod.getInstance()
+            binding.loginPassword.transformationMethod = if (isPasswordVisible) {
+                binding.showPassword.background = AppCompatResources.getDrawable(this, R.drawable.baseline_open_eye_24)
+                HideReturnsTransformationMethod.getInstance()
+            } else {
+                binding.showPassword.background = AppCompatResources.getDrawable(this, R.drawable.baseline_close_eye_24)
+                PasswordTransformationMethod.getInstance()
+            }
+            binding.loginPassword.setSelection(binding.loginPassword.text.length)
         }
 
         binding.signupRedirectText.setOnClickListener {

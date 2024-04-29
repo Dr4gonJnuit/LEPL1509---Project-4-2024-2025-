@@ -1,19 +1,16 @@
 package com.example.jobswype
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import com.example.jobswype.databinding.ActivitySignupBinding
-import com.example.jobswype.model.UserModel
-import com.example.jobswype.session.LoginSession
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.FirebaseFirestore
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
+import com.example.jobswype.databinding.ActivitySignupBinding
+import com.example.jobswype.session.LoginSession
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class SignupActivity : AppCompatActivity() {
 
@@ -91,20 +88,24 @@ class SignupActivity : AppCompatActivity() {
             }
         }
 
-        binding.showPasswordButton.setOnClickListener {
+        binding.showPassword.setOnClickListener {
             // password visibility
             val isPasswordVisible = binding.signupPassword.transformationMethod == PasswordTransformationMethod.getInstance()
             binding.signupPassword.transformationMethod = if (isPasswordVisible) {
+                binding.showPassword.background = AppCompatResources.getDrawable(this, R.drawable.baseline_open_eye_24)
                 HideReturnsTransformationMethod.getInstance()
             } else {
+                binding.showPassword.background = AppCompatResources.getDrawable(this, R.drawable.baseline_close_eye_24)
                 PasswordTransformationMethod.getInstance()
             }
             binding.signupPassword.setSelection(binding.signupPassword.text.length)
 
             val isConfirmPasswordVisible = binding.signupConfirm.transformationMethod == PasswordTransformationMethod.getInstance()
             binding.signupConfirm.transformationMethod = if (isConfirmPasswordVisible) {
+                binding.showPassword.background = AppCompatResources.getDrawable(this, R.drawable.baseline_open_eye_24)
                 HideReturnsTransformationMethod.getInstance()
             } else {
+                binding.showPassword.background = AppCompatResources.getDrawable(this, R.drawable.baseline_close_eye_24)
                 PasswordTransformationMethod.getInstance()
             }
             binding.signupConfirm.setSelection(binding.signupConfirm.text.length)
