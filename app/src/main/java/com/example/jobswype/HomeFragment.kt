@@ -33,7 +33,6 @@ class HomeFragment : Fragment() {
                     }
                 }
                 MyAppContent(context, imageUrls)
-
             }
         }
     }

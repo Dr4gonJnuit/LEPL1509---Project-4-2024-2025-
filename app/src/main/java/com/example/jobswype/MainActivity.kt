@@ -112,7 +112,13 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.bottom_home -> {
-                    replaceFragment(HomeFragment())
+                    checkCVOffre { isEmpty ->
+                        if (isEmpty) {
+                            replaceFragment(MessageInformationFragment("No cv/offer, go create one"))
+                        } else {
+                            replaceFragment(HomeFragment())
+                        }
+                    }
                     true
                 }
 
@@ -124,7 +130,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.bottom_messages -> {
                     checkEmptyContact { isEmpty ->
                         if (isEmpty) {
-                            replaceFragment(NoContactFragment())
+                            replaceFragment(MessageInformationFragment("No contacts, go swipe"))
                         } else {
                             replaceFragment(MessagesFragment())
                         }
@@ -172,6 +178,34 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkCVOffre(callback: (Boolean) -> Unit) {
+        val auth = FirebaseAuth.getInstance()
+        val firestore = FirebaseFirestore.getInstance()
+
+        val currentUser = auth.currentUser
+        val userId = currentUser?.uid
+        val userRef = firestore.collection("users").document(userId!!)
+
+        userRef.get().addOnSuccessListener { user ->
+            if (user != null) {
+                // Get user data
+                val userRole = user.getString("role")
+
+                userRole?.let {
+                    val cvoffer = if (userRole == "JobSeeker") "cv" else "job_offer"
+
+                    val emptyVerif = user.getString(cvoffer)
+
+                    if (emptyVerif == null) {
+                        callback(true)
+                    } else {
+                        callback(false)
+                    }
+
+                }
+            }
+        }
+    }
 
     @Override
     fun setNavigationItemSelectedListener(item: MenuItem): Boolean {

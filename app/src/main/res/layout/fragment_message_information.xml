@@ -12,9 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:id="@+id/no_contact_info"
-        android:text="No contacts, go swipe"
-        android:textSize="28dp"
+        android:id="@+id/messageInformation"
+        android:textSize="28sp"
         tools:text="No contacts, go swipe"/>
+        <!-- android:text="No contacts, go swipe" -->
 
 </RelativeLayout>
