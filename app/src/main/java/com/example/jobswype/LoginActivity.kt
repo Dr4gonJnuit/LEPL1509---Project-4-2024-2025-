@@ -79,10 +79,10 @@ class LoginActivity : AppCompatActivity() {
             // password visibility
             val isPasswordVisible = binding.loginPassword.transformationMethod == PasswordTransformationMethod.getInstance()
             binding.loginPassword.transformationMethod = if (isPasswordVisible) {
-                binding.showPassword.background = AppCompatResources.getDrawable(this, R.drawable.baseline_open_eye_24)
+                binding.showPassword.background = AppCompatResources.getDrawable(this, R.drawable.baseline_close_eye_24)
                 HideReturnsTransformationMethod.getInstance()
             } else {
-                binding.showPassword.background = AppCompatResources.getDrawable(this, R.drawable.baseline_close_eye_24)
+                binding.showPassword.background = AppCompatResources.getDrawable(this, R.drawable.baseline_open_eye_24)
                 PasswordTransformationMethod.getInstance()
             }
             binding.loginPassword.setSelection(binding.loginPassword.text.length)

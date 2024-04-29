@@ -84,15 +84,12 @@ class SettingsFragment : Fragment() {
         val showPassword = view.findViewById<ImageView>(R.id.showPassword)
 
         showPassword.setOnClickListener {
-            println("Show password button clicked")
             // password visibility
             val isPasswordVisible = editPassword.transformationMethod == PasswordTransformationMethod.getInstance()
             editPassword.transformationMethod = if (isPasswordVisible) {
-                println("Password is visible")
                 showPassword.background = AppCompatResources.getDrawable(requireContext(), R.drawable.baseline_close_eye_24)
                 HideReturnsTransformationMethod.getInstance()
             } else {
-                println("Password is not visible")
                 showPassword.background = AppCompatResources.getDrawable(requireContext(), R.drawable.baseline_open_eye_24)
                 PasswordTransformationMethod.getInstance()
             }

@@ -92,20 +92,20 @@ class SignupActivity : AppCompatActivity() {
             // password visibility
             val isPasswordVisible = binding.signupPassword.transformationMethod == PasswordTransformationMethod.getInstance()
             binding.signupPassword.transformationMethod = if (isPasswordVisible) {
-                binding.showPassword.background = AppCompatResources.getDrawable(this, R.drawable.baseline_open_eye_24)
+                binding.showPassword.background = AppCompatResources.getDrawable(this, R.drawable.baseline_close_eye_24)
                 HideReturnsTransformationMethod.getInstance()
             } else {
-                binding.showPassword.background = AppCompatResources.getDrawable(this, R.drawable.baseline_close_eye_24)
+                binding.showPassword.background = AppCompatResources.getDrawable(this, R.drawable.baseline_open_eye_24)
                 PasswordTransformationMethod.getInstance()
             }
             binding.signupPassword.setSelection(binding.signupPassword.text.length)
 
             val isConfirmPasswordVisible = binding.signupConfirm.transformationMethod == PasswordTransformationMethod.getInstance()
             binding.signupConfirm.transformationMethod = if (isConfirmPasswordVisible) {
-                binding.showPassword.background = AppCompatResources.getDrawable(this, R.drawable.baseline_open_eye_24)
+                binding.showPassword.background = AppCompatResources.getDrawable(this, R.drawable.baseline_close_eye_24)
                 HideReturnsTransformationMethod.getInstance()
             } else {
-                binding.showPassword.background = AppCompatResources.getDrawable(this, R.drawable.baseline_close_eye_24)
+                binding.showPassword.background = AppCompatResources.getDrawable(this, R.drawable.baseline_open_eye_24)
                 PasswordTransformationMethod.getInstance()
             }
             binding.signupConfirm.setSelection(binding.signupConfirm.text.length)
