@@ -1,5 +1,6 @@
 package com.example.jobswype
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -106,7 +107,6 @@ class MainActivity : AppCompatActivity() {
         // Add Contacts to Navigation Drawer if the user have contacts
         //addContactsMenu(context = applicationContext, navigationView)
 
-
         // Bottom Navigation
         bottomNavigationView = findViewById(R.id.bottom_navigation)
         bottomNavigationView.setOnItemSelectedListener {
@@ -122,7 +122,13 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.bottom_messages -> {
-                    replaceFragment(MessagesFragment())
+                    checkEmptyContact { isEmpty ->
+                        if (isEmpty) {
+                            replaceFragment(NoContactFragment())
+                        } else {
+                            replaceFragment(MessagesFragment())
+                        }
+                    }
                     true
                 }
 
@@ -141,6 +147,31 @@ class MainActivity : AppCompatActivity() {
 
         getFCMToken()
     }
+
+    private fun checkEmptyContact(callback: (Boolean) -> Unit) {
+        val auth = FirebaseAuth.getInstance()
+        val firestore = FirebaseFirestore.getInstance()
+
+        val currentUser = auth.currentUser
+        val userId = currentUser?.uid
+        val userRef = firestore.collection("users").document(userId!!)
+
+        userRef.get().addOnSuccessListener { user ->
+            if (user != null) {
+                // Get user data
+                val userRole = user.getString("role")
+
+                userRole?.let {
+                    firestore.collection("matchmaking").whereEqualTo(it, userId).get()
+                        .addOnSuccessListener { matchs ->
+                            val empty = matchs.isEmpty
+                            callback(empty)
+                        }
+                }
+            }
+        }
+    }
+
 
     @Override
     fun setNavigationItemSelectedListener(item: MenuItem): Boolean {
