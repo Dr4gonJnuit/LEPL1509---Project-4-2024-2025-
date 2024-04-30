@@ -321,6 +321,7 @@ fun loadUserData(view: View, context: Context) {
     val profileUsername = view.findViewById<TextView>(R.id.profileUsername)
     val profileEmail = view.findViewById<TextView>(R.id.profileEmail)
     val profilePhone = view.findViewById<TextView>(R.id.profilePhone)
+    val profileCVO = view.findViewById<ImageView>(R.id.cvoPicture)
 
     // Initialize Firebase instances
     val auth = FirebaseAuth.getInstance()
@@ -332,6 +333,8 @@ fun loadUserData(view: View, context: Context) {
 
     userRef.get().addOnSuccessListener { user ->
         if (user != null) {
+            val userRole = user.getString("role")
+
             // Get user data
             val email = user.getString("email")
 
@@ -347,7 +350,6 @@ fun loadUserData(view: View, context: Context) {
 
             val profileImageUrl = user.getString("profilePic")
 
-
             // Load profile image using Glide
             profileImageUrl?.let {
                 Glide.with(context)
@@ -357,6 +359,18 @@ fun loadUserData(view: View, context: Context) {
                     .error(R.drawable.default_pdp) // Image to show if loading fails
                     .into(profileImg)
             }
+
+            val cvoImageURL = user.getString(if (userRole == "JobSeeker") "cv" else "job_offer")
+
+            // Load the cv/offer image using Glide
+            cvoImageURL?.let{
+                Glide.with(context)
+                    .load(it)
+                    .placeholder(R.drawable.default_pdp) // Placeholder image while loading TODO: change into something that represent better a CV or offer
+                    .error(R.drawable.default_pdp) // Image to show if loading fails TODO: change into something that represent better a CV or offer
+                    .into(profileCVO)
+            }
+
             // Set user data to views
             profileUsername.text = username
             profileEmail.text = email

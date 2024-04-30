@@ -31,4 +31,6 @@
     <string name="send_message">Send message</string>
     <string name="tap_your_message">Tap your message</string>
     <string name="write_here">Write here</string>
+    <string name="go_to_setting">Go to Settings</string>
+    <string name="img_cvo_content_desc">CVO picture</string> <!-- cvo = CV/offer -->
 </resources>

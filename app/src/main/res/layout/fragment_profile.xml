@@ -75,6 +75,19 @@
                     android:padding="15dp"
                     android:textColor="@color/black" />
 
+                <ImageView
+                    android:id="@+id/cvoPicture"
+                    android:layout_width="180dp"
+                    android:layout_height="200dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="20dp"
+                    android:contentDescription="@string/img_cvo_content_desc" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/settingsRedirect"
+                    tools:text="Go to settings" />
 
             </LinearLayout>
 
