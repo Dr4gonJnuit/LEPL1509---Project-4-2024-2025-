@@ -21,7 +21,15 @@ class MessageInformationFragment(private val message: String, private val redire
 
         // Put correct text on the information
         messageInformation.text = message
-        buttonInformation.text = redirectInfo
+
+        // Put the correct text to the button
+        val buttonTextToShow: String = when(redirectInfo) {
+            "Settings" -> getString(R.string.settings)
+            "Home" -> getString(R.string.home)
+            "HomeWithoutCVOffer" -> getString(R.string.home)
+            else -> getString(R.string.no_page)
+        }
+        buttonInformation.text = buttonTextToShow
 
         buttonInformation.setOnClickListener{
             if (redirectInfo == "Settings") {
@@ -39,7 +47,7 @@ class MessageInformationFragment(private val message: String, private val redire
                     .commit()
             }
             if (redirectInfo == "HomeWithoutCVOffer") {
-                val messageInformationFragment = MessageInformationFragment("Add cv/offer, to be able to swipe", "Settings")
+                val messageInformationFragment = MessageInformationFragment(getString(R.string.no_swipe_if_no_cv), "Settings")
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, messageInformationFragment) // Replace fragment_container with the ID of the container layout in your activity
                     .addToBackStack(null)

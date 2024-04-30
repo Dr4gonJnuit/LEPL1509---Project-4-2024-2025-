@@ -7,14 +7,14 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:layout_marginBottom="55dp"
-    android:background="@color/logo_color"
+    android:background="@drawable/login_signup_wallpaper"
     tools:context=".MainActivity">
-
 
     <TextView
         android:id="@+id/messageInformation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
         android:gravity="center"
         android:textSize="28sp"
         tools:text="The information of the message here" />
@@ -24,10 +24,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/messageInformation"
-        android:gravity="center"
-        android:padding="15sp"
-        android:textSize="28sp"
+        android:layout_centerHorizontal="true"
+        android:padding="10sp"
+        android:textSize="15sp"
         tools:text="The information of the button here" />
-
 
 </RelativeLayout>

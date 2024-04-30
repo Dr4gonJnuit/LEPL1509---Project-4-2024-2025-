@@ -1,5 +1,6 @@
 package com.example.jobswype
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -102,7 +103,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             checkCVOffer { isEmpty ->
                 if (isEmpty) {
-                    replaceFragment(MessageInformationFragment("To swipe, add a cv/offer", "Settings"))
+                    replaceFragment(MessageInformationFragment(getString(R.string.no_swipe_if_no_cv), "Settings"))
                 } else {
                     replaceFragment(HomeFragment())
                 }
@@ -120,7 +121,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.bottom_home -> {
                     checkCVOffer { isEmpty ->
                         if (isEmpty) {
-                            replaceFragment(MessageInformationFragment("Add cv/offer, to swipe", "Settings"))
+                            replaceFragment(MessageInformationFragment(getString(R.string.no_swipe_if_no_cv), "Settings"))
                         } else {
                             replaceFragment(HomeFragment())
                         }
@@ -138,9 +139,9 @@ class MainActivity : AppCompatActivity() {
                         if (isEmptyContact) {
                             checkCVOffer { isEmptyCVOffer ->
                                 if (isEmptyCVOffer) {
-                                    replaceFragment(MessageInformationFragment("No contacts, go swipe", "HomeWithoutCVOffer"))
+                                    replaceFragment(MessageInformationFragment(getString(R.string.no_contact_go_swipe), "HomeWithoutCVOffer"))
                                 } else {
-                                    replaceFragment(MessageInformationFragment("No contacts, go swipe", "Home"))
+                                    replaceFragment(MessageInformationFragment(getString(R.string.no_contact_go_swipe), "Home"))
                                 }
                             }
                         } else {
@@ -172,7 +173,12 @@ class MainActivity : AppCompatActivity() {
 
         val currentUser = auth.currentUser
         val userId = currentUser?.uid
-        val userRef = firestore.collection("users").document(userId!!)
+        if (userId == null) {
+            Log.w(TAG, "Problem to get the userID")
+            callback(true)
+            return
+        }
+        val userRef = firestore.collection("users").document(userId)
 
         userRef.get().addOnSuccessListener { user ->
             if (user != null) {
@@ -196,7 +202,13 @@ class MainActivity : AppCompatActivity() {
 
         val currentUser = auth.currentUser
         val userId = currentUser?.uid
-        val userRef = firestore.collection("users").document(userId!!)
+
+        if (userId == null) {
+            Log.w(TAG, "Problem to get the userID")
+            callback(true)
+            return
+        }
+        val userRef = firestore.collection("users").document(userId)
 
         userRef.get().addOnSuccessListener { user ->
             if (user != null) {
@@ -217,6 +229,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+            .addOnFailureListener {
+                Log.w(TAG, "Fail to get a cv or an offer")
+                callback(true)
+            }
     }
 
     @Override
@@ -329,7 +345,17 @@ fun loadUserData(view: View, context: Context) {
 
     val currentUser = auth.currentUser
     val userId = currentUser?.uid
-    val userRef = firestore.collection("users").document(userId!!)
+    if (userId == null) {
+        Log.w(TAG, "Problem to get the userID")
+        Toast.makeText(
+            context,
+            "We don't know how you did it but you aren't connected to the app, go to logout",
+            Toast.LENGTH_SHORT
+        ).show()
+        // TODO : fragment with a button logout -> use MessageInformationFragment
+        return
+    }
+    val userRef = firestore.collection("users").document(userId)
 
     userRef.get().addOnSuccessListener { user ->
         if (user != null) {
