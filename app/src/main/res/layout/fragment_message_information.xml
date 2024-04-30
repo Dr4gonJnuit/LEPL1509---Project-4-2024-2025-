@@ -1,20 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/logo_color"
+    android:layout_centerVertical="true"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
     android:layout_marginBottom="55dp"
+    android:background="@color/logo_color"
     tools:context=".MainActivity">
 
+
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
         android:id="@+id/messageInformation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
         android:textSize="28sp"
-        tools:text="No contacts, go swipe"/>
-        <!-- android:text="No contacts, go swipe" -->
+        tools:text="The information of the message here" />
+
+    <Button
+        android:id="@+id/buttonInformation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/messageInformation"
+        android:gravity="center"
+        android:padding="15sp"
+        android:textSize="28sp"
+        tools:text="The information of the button here" />
+
 
 </RelativeLayout>

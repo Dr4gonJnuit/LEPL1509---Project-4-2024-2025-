@@ -77,6 +77,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var bottomNavigationView: BottomNavigationView
     private val NOTIFICATION_PERMISSION_REQUEST_CODE = 100
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -99,9 +100,9 @@ class MainActivity : AppCompatActivity() {
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         if (savedInstanceState == null) {
-            checkCVOffre { isEmpty ->
+            checkCVOffer { isEmpty ->
                 if (isEmpty) {
-                    replaceFragment(MessageInformationFragment("To swipe, add a cv/offer"))
+                    replaceFragment(MessageInformationFragment("To swipe, add a cv/offer", "Settings"))
                 } else {
                     replaceFragment(HomeFragment())
                 }
@@ -117,9 +118,9 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.bottom_home -> {
-                    checkCVOffre { isEmpty ->
+                    checkCVOffer { isEmpty ->
                         if (isEmpty) {
-                            replaceFragment(MessageInformationFragment("Add cv/offer, to swipe"))
+                            replaceFragment(MessageInformationFragment("Add cv/offer, to swipe", "Settings"))
                         } else {
                             replaceFragment(HomeFragment())
                         }
@@ -133,9 +134,15 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.bottom_messages -> {
-                    checkEmptyContact { isEmpty ->
-                        if (isEmpty) {
-                            replaceFragment(MessageInformationFragment("No contacts, go swipe"))
+                    checkEmptyContact { isEmptyContact ->
+                        if (isEmptyContact) {
+                            checkCVOffer { isEmptyCVOffer ->
+                                if (isEmptyCVOffer) {
+                                    replaceFragment(MessageInformationFragment("No contacts, go swipe", "HomeWithoutCVOffer"))
+                                } else {
+                                    replaceFragment(MessageInformationFragment("No contacts, go swipe", "Home"))
+                                }
+                            }
                         } else {
                             replaceFragment(MessagesFragment())
                         }
@@ -183,7 +190,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkCVOffre(callback: (Boolean) -> Unit) {
+    private fun checkCVOffer(callback: (Boolean) -> Unit) {
         val auth = FirebaseAuth.getInstance()
         val firestore = FirebaseFirestore.getInstance()
 
