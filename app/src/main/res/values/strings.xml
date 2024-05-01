@@ -36,6 +36,6 @@
     <string name="home">Home</string>
     <string name="no_page">There aren\'t page for this yet</string>
     <string name="no_swipe_if_no_cv">You don\'t have a CV or a job offer, add one in the settings</string>
-    <string name="no_contact_go_swipe">You don\'t have any contact wait for a match</string>
+    <string name="no_contact_go_swipe">You don\'t have any contact, wait for a match</string>
     <string name="img_cvo_content_desc">CVO picture</string> <!-- cvo = CV/offer -->
 </resources>
