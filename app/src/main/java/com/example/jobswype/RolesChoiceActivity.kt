@@ -23,7 +23,6 @@ class RolesChoice : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
         val currentUser = firebaseAuth.currentUser
 
-        Toast.makeText(this, "Choice beginning", Toast.LENGTH_SHORT).show()
         binding.employerButton.setOnClickListener {
             updateRole(currentUser?.uid, "Recruiter")
         }
@@ -39,7 +38,6 @@ class RolesChoice : AppCompatActivity() {
             val userData = hashMapOf("role" to role)
             userRef.set(userData, SetOptions.merge())
                 .addOnSuccessListener {
-                    Toast.makeText(this, "Rôle mis à jour avec succès", Toast.LENGTH_SHORT).show()
                     // Check le rôle et renvoie vers la page correspondante
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)

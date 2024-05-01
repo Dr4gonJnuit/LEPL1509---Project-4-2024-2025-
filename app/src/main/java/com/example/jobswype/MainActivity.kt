@@ -387,6 +387,13 @@ fun loadUserData(view: View, context: Context) {
 
             if (userRole == "JobSeeker"){
                 val cvoImageURL = user.getString("cv")
+                if (cvoImageURL == null) {
+                    Toast.makeText(
+                        context,
+                        "No CV found",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
                 // Load the cv/offer image using Glide
                 cvoImageURL?.let{
                     Glide.with(context)
