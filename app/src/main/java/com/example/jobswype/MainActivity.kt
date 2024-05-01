@@ -290,10 +290,9 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == NOTIFICATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permission allowed", Toast.LENGTH_SHORT).show()
+                Log.e("Permission", "Granted")
             } else {
-                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
-
+                Log.e("Permission", "Denied")
             }
         }
     }
@@ -349,7 +348,7 @@ fun loadUserData(view: View, context: Context) {
         Log.w(TAG, "Problem to get the userID")
         Toast.makeText(
             context,
-            "We don't know how you did it but you aren't connected to the app, go to logout",
+            "User not logged in",
             Toast.LENGTH_SHORT
         ).show()
         // TODO : fragment with a button logout -> use MessageInformationFragment
@@ -371,7 +370,7 @@ fun loadUserData(view: View, context: Context) {
 
             var phone = user.getString("phone")
             if (phone == "none") {
-                phone = ""
+                phone = "0412345678"
             }
 
             val profileImageUrl = user.getString("profilePic")
@@ -386,16 +385,28 @@ fun loadUserData(view: View, context: Context) {
                     .into(profileImg)
             }
 
-            val cvoImageURL = user.getString(if (userRole == "JobSeeker") "cv" else "job_offer")
-
-            // Load the cv/offer image using Glide
-            cvoImageURL?.let{
-                Glide.with(context)
-                    .load(it)
-                    .placeholder(R.drawable.default_pdp) // Placeholder image while loading TODO: change into something that represent better a CV or offer
-                    .error(R.drawable.default_pdp) // Image to show if loading fails TODO: change into something that represent better a CV or offer
-                    .into(profileCVO)
+            if (userRole == "JobSeeker"){
+                val cvoImageURL = user.getString("cv")
+                // Load the cv/offer image using Glide
+                cvoImageURL?.let{
+                    Glide.with(context)
+                        .load(it)
+                        .placeholder(R.drawable.default_cv) // Placeholder image while loading TODO: change into something that represent better a CV or offer
+                        .error(R.drawable.default_cv) // Image to show if loading fails TODO: change into something that represent better a CV or offer
+                        .into(profileCVO)
+                }
+            } else {
+                val cvoImageURL = user.getString("job_offer")
+                // Load the cv/offer image using Glide
+                cvoImageURL?.let{
+                    Glide.with(context)
+                        .load(it)
+                        .placeholder(R.drawable.default_job_offer) // Placeholder image while loading TODO: change into something that represent better a CV or offer
+                        .error(R.drawable.default_job_offer) // Image to show if loading fails TODO: change into something that represent better a CV or offer
+                        .into(profileCVO)
+                }
             }
+
 
             // Set user data to views
             profileUsername.text = username

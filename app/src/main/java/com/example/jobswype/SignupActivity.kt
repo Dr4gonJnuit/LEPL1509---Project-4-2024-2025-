@@ -55,11 +55,6 @@ class SignupActivity : AppCompatActivity() {
 
                                 db.collection("users").document(userId).set(userMap)
                                     .addOnSuccessListener {
-                                        Toast.makeText(
-                                            this,
-                                            "User added to Firestore",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
                                         // Redirect to MainActivity
                                         session.createLoginSession(password, email)
                                         val intent = Intent(this, RolesChoice::class.java)

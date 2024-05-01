@@ -35,7 +35,7 @@
     <string name="settings">Settings</string>
     <string name="home">Home</string>
     <string name="no_page">There aren\'t page for this yet</string>
-    <string name="no_swipe_if_no_cv">Hey, it\'s seem that you don\'t have a CV/Job Offer, add one in the settings by clicking the button below</string>
-    <string name="no_contact_go_swipe">Hey, it\'s seem that you don\'t have any contact. If you have liked someone then wait for a match. Otherwise, you should go like some profiles to improve your chance of match.</string>
+    <string name="no_swipe_if_no_cv">You don\'t have a CV or a job offer, add one in the settings</string>
+    <string name="no_contact_go_swipe">You don\'t have any contact wait for a match</string>
     <string name="img_cvo_content_desc">CVO picture</string> <!-- cvo = CV/offer -->
 </resources>
