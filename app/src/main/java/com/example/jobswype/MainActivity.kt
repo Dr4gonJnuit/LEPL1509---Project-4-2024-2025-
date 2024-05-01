@@ -388,28 +388,31 @@ fun loadUserData(view: View, context: Context) {
             if (userRole == "JobSeeker"){
                 val cvoImageURL = user.getString("cv")
                 if (cvoImageURL == null) {
-                    Toast.makeText(
-                        context,
-                        "No CV found",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Glide.with(context)
+                        .load(R.drawable.default_cv)
+                        .into(profileCVO)
                 }
                 // Load the cv/offer image using Glide
                 cvoImageURL?.let{
                     Glide.with(context)
                         .load(it)
-                        .placeholder(R.drawable.default_cv) // Placeholder image while loading TODO: change into something that represent better a CV or offer
-                        .error(R.drawable.default_cv) // Image to show if loading fails TODO: change into something that represent better a CV or offer
+                        .placeholder(R.drawable.default_cv) // Placeholder image while loading
+                        .error(R.drawable.default_cv) // Image to show if loading fails
                         .into(profileCVO)
                 }
             } else {
                 val cvoImageURL = user.getString("job_offer")
+                if (cvoImageURL == null) {
+                    Glide.with(context)
+                        .load(R.drawable.default_job_offer)
+                        .into(profileCVO)
+                }
                 // Load the cv/offer image using Glide
                 cvoImageURL?.let{
                     Glide.with(context)
                         .load(it)
-                        .placeholder(R.drawable.default_job_offer) // Placeholder image while loading TODO: change into something that represent better a CV or offer
-                        .error(R.drawable.default_job_offer) // Image to show if loading fails TODO: change into something that represent better a CV or offer
+                        .placeholder(R.drawable.default_job_offer) // Placeholder image while loading
+                        .error(R.drawable.default_job_offer) // Image to show if loading fails
                         .into(profileCVO)
                 }
             }
