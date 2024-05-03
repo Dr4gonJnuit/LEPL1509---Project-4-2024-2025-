@@ -55,11 +55,11 @@ class SignupActivity : AppCompatActivity() {
 
                                 db.collection("users").document(userId).set(userMap)
                                     .addOnSuccessListener {
-                                        // Redirect to MainActivity
+                                        // Redirect to roles choice
                                         session.createLoginSession(password, email)
                                         val intent = Intent(this, RolesChoice::class.java)
                                         startActivity(intent)
-                                        finish()
+                                        finish() // Close this activity
                                     }.addOnFailureListener { e ->
                                         Toast.makeText(
                                             this,
@@ -67,15 +67,12 @@ class SignupActivity : AppCompatActivity() {
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
-                            } else {
-                                Toast.makeText(
-                                    this,
-                                    "Your password is too short, minimum length is 6",
-                                    Toast.LENGTH_SHORT
-                                ).show()
                             }
                         }
-                } else {
+                } else if (password.length < 6) {
+                    Toast.makeText(this, "Password must be at least 6 characters long.", Toast.LENGTH_SHORT).show()
+                }
+                else {
                     Toast.makeText(this, "Passwords do not match.", Toast.LENGTH_SHORT).show()
                 }
             } else {
@@ -109,6 +106,7 @@ class SignupActivity : AppCompatActivity() {
         binding.loginRedirectText.setOnClickListener {
             val loginIntent = Intent(this, LoginActivity::class.java)
             startActivity(loginIntent)
+            finish()
         }
 
         if (session.isLoggedIn()) {

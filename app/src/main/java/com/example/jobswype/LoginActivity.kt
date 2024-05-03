@@ -91,6 +91,7 @@ class LoginActivity : AppCompatActivity() {
         binding.signupRedirectText.setOnClickListener {
             val signupIntent = Intent(this, SignupActivity::class.java)
             startActivity(signupIntent)
+            finish()
         }
 
         if (session.isLoggedIn()) {
